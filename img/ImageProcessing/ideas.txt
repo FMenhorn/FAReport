@@ -1,0 +1,74 @@
+- Simulation: want flagfield (at least: static object / border, water, source, sink)
+- Rigid bodies: maybe pixels, but polygons or circles were better => at least smoothing the pixel borders would be nice
+- Image size as LBM size => code in parameters class
+
+Next things:
+- Polygon function (Saumitra / Andrei) => use rectangles?
+- Real Photo processing => try out with good camera (if still too bad: some kind of EM algorithm with color interpolation? Clustering?)
+- Fill objects? Automatically done by RB group (through polygons)?
+
+Ideas: 
+- Noise reduction (Gauss filter / median blur)
+- Histogram-based calibration => Contrast enhancement
+- Morphological operations: Opening (possibly closing before) -- probably on separate binary maps for each foreground type
+- Recognize paper border and replace it by white pixels or just cut it to black shape
+	-- Assumption: From each border, until the first continuous stretch of white pixels is encountered, we're outside paper.
+	-- Fill the region from the border to the paper with white.
+- Thresholding
+- Morphological operations after thresholding? Morphological operations on each object type extra?
+- Flood-Fill / Watershed with markers of distance transform image
+- Mark inner and outer regions found by segmentation/...
+- Crop the image so that the rest is bigger (correct aspect ratio)
+- Scale the image (interpolation? thresholding again? scaling before thresholding?) => Can't scale before cropping
+- Convert to flagfield
+
+- Look at different brightness regions of the image?
+
+- Mind the BGR ordering!
+
+
+
+Other things:
+- Decide on input encoding (roughly done)
+- Create library file(s) with functionality for filtering, morphological operators, calibration, thresholding, converting, segmentation, distance transform, ...)
+- Create test input images: non-closed lines, shadows, borders outside the image, thick and thin lines, ...
+- Create interchangeable input provision
+- Create interface to simulation stage (lattice size configurable, flagfield structure with enum for different landscape types (static, rigid, source, sink, fluid, ...)
+- Optionally provide test flagfield for the simulation stage
+- Pixel border smoothing / geometry creation for rigid body group
+
+/*
+Stufen:
+Repräsentation in Lattice und Bullet (ohne Gravitation)
+- RB werden in LBM integriert/aktualisiert
+- LBM-Step mit Boundary Conditions abhängig von den Geschwindigkeiten der Objekte (Pixel-Geschwindigkeiten integrieren)
+- Kräfteberechnung
+- Kräfte in Bullet setzen
+- Bullet-Step
+*/
+
+OpenCV libraries:
+opencv_core 
+opencv_contrib 
+opencv_features2d 
+opencv_calib3d 
+opencv_flann 
+opencv_highgui 
+opencv_imgproc 
+opencv_ml 
+opencv_objdetect
+opencv_legacy
+opencv_ocl
+opencv_video
+
+Test Images Requirements:
+Basic: White Paper, Colored sketch
+Test:
+	- White paper only a part of the captured image
+	- White paper not straight (assuming some paper egde can be seen)
+	- Colored lines not completely connected
+	- Re-sketching on the lines
+	- Line-intersections
+	- Filled objects
+	- Other white objects (excluding the paper) present in the image
+	- Different levels of brightness

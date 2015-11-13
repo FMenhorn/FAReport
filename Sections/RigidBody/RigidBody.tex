@@ -1,0 +1,17 @@
+\section{Rigid Body simulation}
+
+COLLIDE! and resolve correctly... but mainly COLLIDE!
+
+\subsection{Building Bullet}
+To build bullet, you need:
+\begin{itemize}
+\item cmake
+\end{itemize}
+Instructions:
+\begin{enumerate}
+\item Extract the \verb+fa/sources-for-rigidbody/bullet3-2.83.6.tar.gz + somewhere.
+\item run \verb+$cmake . + in the top directory.
+\item run \verb+$make -j4+ (\verb+-j4+ chooses 4 threads for compilation) in the top directory.
+\item run \verb+$sudo make install + in the \verb+src+ directory.
+\item Enjoy! (\& profit)
+\end{enumerate}

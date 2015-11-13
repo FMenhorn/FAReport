@@ -1,0 +1,298 @@
+\section{Code Framework}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Classes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Classes}
+There are a bunch of existing classes which should be used by everyone to setup
+the interfaces among the groups.
+The following table gives an overview and short description of each class.
+
+\noindent
+\begin{tabular}{|l|l|}
+	\hline
+	CDataArray2D.hpp				&
+		Data storage for 2D arrays							\\
+	\hline
+	CDataDrawingInformation.hpp		&
+		Data storage for interactive drawing information	\\
+	\hline
+	CGlTexture.hpp					&
+		Abstraction for OpenGL Textures						\\
+	\hline
+	CParameters.hpp					&
+		Program and simulation parameters					\\
+	\hline
+	CPipelinePacket.hpp				&
+		Pipeline packet capable of being forwarded via the pipeline	\\
+	\hline
+	CPipelineStage.hpp				&
+		Pipeline stage providing interfaces for pipelining	\\
+	\hline
+	CSDLInterface.hpp				&
+		SDL Interface for visualization and interactivity	\\
+	\hline
+	CStage\_ImageInput.hpp			&
+		Pipeline stage for image input (single image from file)	\\
+	\hline
+	CStage\_ImageProcessing.hpp		&
+		Pipeline stage for image processing filter			\\
+	\hline
+	CStage\_VideoInput.hpp			&
+		Pipeline stage for video input, e.g.\,from webcam	\\
+	\hline
+	CStage\_VideoOutput.hpp			&
+		Pipeline stage for video output				\\			
+	\hline
+	main.cpp						&
+		main entry to setup pipelined scenarios		\\
+	\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pipeline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Pipeline}
+\label{sec:pipeline}
+
+The idea of a pipelining model is creating independent execution parts with
+particular input-output specifications.
+E.g.\,a webcam only provides images which are forwarded to the image filter.
+After processing of the image filter, this information is further forwarded to
+the simulation (not yet implemented) and then to the output for visualization.
+
+All those pipeline stages are independent and thus can be independently
+processed - e.g. Image filter and simulation computations in parallel.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pipeline stage
+%
+\subsubsection{Pipeline stage}
+
+We continue with an example given by the image processing filter
+\textit{CStage\_ImageProcessing.hpp}.
+For well-known interfaces, each new pipeline stage has to inherit the class
+CPipelineStage:
+
+\begin{lstlisting}
+class CStage_ImageProcessing	:	public
+	CPipelineStage
+...
+\end{lstlisting}
+
+\noindent
+For processing of the images, paramters are required to know which
+computations to do, at least a single input storage is required as well as an
+output storage to forward processes images to other classes:
+
+\begin{lstlisting}
+...
+/**
+ * global parameters
+ */
+CParameters &cParameters;
+
+/**
+ * input image
+ */
+CDataArray2D<unsigned char,3> input_cDataArray2D;
+
+/**
+ * processed image
+ */
+CDataArray2D<unsigned char,3> output_cDataArray2D;
+...
+\end{lstlisting}
+
+\noindent
+Since the parameters are shared with the other classes, they are
+setup in the constructor:
+
+\begin{lstlisting}
+public:
+/**
+ * constructor
+ */
+CStage_ImageProcessing(CParameters &i_cParameters):
+CPipelineStage("ImageProcessing"),
+cParameters(i_cParameters)
+{
+}
+\end{lstlisting}
+
+\noindent
+In case of an input sent via the pipeline of another stage such as the video
+input, the method \textit{pipeline\_process\_input} is executed and has to be
+implemented. This interface is particularly requested by the class
+\textit{CPipelineStage}.
+
+\begin{lstlisting}
+void pipeline_process_input(
+	CPipelinePacket &i_cPipelinePacket
+)
+{
+...
+\end{lstlisting}
+
+\noindent
+Since not all possible data types can be probably processed, we have to check
+for compatible input packages and unpack the data to make it available with our
+accessor class:
+\begin{lstlisting}
+// we are currently only able to process "unsigned char,3" data arrays.
+if (i_cPipelinePacket.type_info_name != typeid(CDataArray2D<unsigned char,3>).name())
+{
+	std::cerr << "ERROR: Video Output is only able to process (char,3) arrays" << std::endl;
+	exit(-1);
+}
+
+// unpack data
+CDataArray2D<unsigned char,3> *input = i_cPipelinePacket.getPayload<CDataArray2D<unsigned char,3> >();
+\end{lstlisting}
+
+\noindent
+After unpacking the data and processing the data with more details available in
+the source code file itself, the output data array is pushed to the pipeline and
+thus forwarded to the next pipeline stages:
+\begin{lstlisting}
+CPipelineStage::pipeline_push((CPipelinePacket&)output_cDataArray2D);
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pipeline setup
+%
+\subsubsection{Pipeline setup}
+After programming several stages, their input and output has to be
+connected after instantiation.
+E.g.\,let us assume that we like to have an static input image with an image
+filter and the possibility to draw into the image, this would lead to the
+following pipeline:
+
+\begin{lstlisting}
+// static image input
+CStage_ImageInput cStage_ImageInput(cParameters);
+// video output
+CStage_VideoOutput cStage_VideoOutput(cParameters);
+
+// PIPELINE CONNECTIONS
+// forward image to video output
+cStage_ImageInput.connectOutput(cStage_VideoOutput);
+// forward mouse movements to image input
+cStage_VideoOutput.connectOutput(cStage_ImageInput);
+
+
+// initial push of static image
+cStage_ImageInput.pipeline_push();
+
+// main loop
+while (!cParameters.exit)
+{
+	// trigger image input to do something
+	cStage_VideoOutput.main_loop_callback();
+}
+\end{lstlisting}
+
+\noindent
+For our pipeline concept, only the outputs have to be connected.
+The initial push for the image input is required to initially forward the static
+image to the video output.
+
+The main loop is required to e.g.\,check for user input, to draw updates for the
+visualization and to run a simulation timestep.
+
+
+\subsection{Interaction}
+Several keystrokes currently exist updating some parameters in the class
+\textit{CParameters}.
+Note that all pipeline stages get a reference to this class during
+initialization.
+
+Since the Video output is closely connected to the input system, all
+input keystrokes which are not directly processed are forwarded to the method
+key\_down of the parameter class:
+
+\begin{lstlisting}
+/**
+ * return bool if processed
+ */
+bool key_down(char i_key)
+{
+	switch(i_key)
+	{
+	case SDLK_j:
+		stage_imageprocessing_filter_id--;
+		std::cout << "Using filter id " << stage_imageprocessing_filter_id << std::endl;
+		return true;
+
+	case SDLK_k:
+		stage_imageprocessing_filter_id++;
+		std::cout << "Using filter id " << stage_imageprocessing_filter_id << std::endl;
+		return true;
+\end{lstlisting}
+
+\noindent
+This allows the modification of the parameters during the programs runtime.
+So far the following keystrokes are defined:
+
+\noindent
+\begin{tabular}{|c|l|}
+	\hline
+	\multicolumn{2}{|l|}{\textbf{General}}	\\
+	\hline
+	q & quit program	\\
+	\hline
+	\hline
+
+	\multicolumn{2}{|l|}{\textbf{1: image Processing}}	\\
+	\hline
+	j,k & decrease / increase filter id\\
+	\hline
+	g,t & decrease/increase threshold value\\
+	\hline
+\end{tabular}
+
+
+\subsection{Program start}
+
+Several program parameters currently exist and are also processed in
+CParameters:
+
+\noindent
+\begin{tabular}{|c|l|}
+	\hline
+	\multicolumn{2}{|l|}{\textbf{General}}	\\
+	\hline
+	p	& pipeline id to use (see main.cpp)	\\
+	\hline
+	v	& verbosity level	\\
+	\hline
+	\hline
+
+	\multicolumn{2}{|l|}{\textbf{0: image/videoinput}}	\\
+	\hline
+	d	& video device string to use\\
+	\hline
+	w	& request this width for video input\\
+	\hline
+	h	& request this height for video input\\
+	\hline
+	i	& path to input image to use\\
+	\hline
+	\hline
+
+	\multicolumn{2}{|l|}{\textbf{3: fluid simulation LBM}}	\\
+	\hline
+	v	& switch between flag field and velocity output	\\
+	\hline
+	\hline
+	
+	\multicolumn{2}{|l|}{\textbf{4: parallelization}}	\\
+	\hline
+	n	& number of threads to use\\
+	\hline
+	\hline
+
+\end{tabular}

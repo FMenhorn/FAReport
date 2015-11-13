@@ -1,0 +1,69 @@
+\documentclass[11pt,a4paper]{article}
+
+%% Preamble
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{hyperref}
+
+\lstset{%
+  showstringspaces=false,
+  breaklines=true,%
+  frame=single,%
+  language=C,%
+  basicstyle=\small,%
+  numbers=left,
+  numberstyle=\tiny,
+  basicstyle=\ttfamily\fontsize{10}{10}\selectfont,
+  showstringspaces=false,
+  showstringspaces=false}
+
+\renewcommand{\arraystretch}{1.5}
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TITLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Title-Needed: A framework for interactive computational fluid simulation and
+visualization}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INTRODUCTION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{Sections/Introduction/Introduction.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Requirements \& Compilation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{Sections/RequirementsCompilation/RequirementsCompilation.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Code Framework
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{Sections/CodeFramework/CodeFramework.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The Different Teams
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{Sections/ProjectManagement/ProjectManagement.tex}
+
+\input{Sections/InputDevices/InputDevices.tex}
+
+\input{Sections/ImageProcessing/ImageProcessing.tex}
+
+\input{Sections/LBM/LBM.tex}
+
+\input{Sections/RigidBody/RigidBody.tex}
+
+\input{Sections/Visualization/Visualization.tex}
+
+\end{document}
