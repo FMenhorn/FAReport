@@ -1,3 +1,46 @@
 \section{Project management}
+This section will give an insight over the recommended management strategy to be used for this kind of projects and the most probable challenges that might show up along the way to be avoided. It will provide an overview of the necessary managerial tools suggested for such a projects.
 
-yadda yadda (as usual in project management :P)
+
+\subsection{Agile Management}
+\textit{Here a brief introduction on agile management will be given with minimal theoretical details (since we always minimze in agile)}
+
+
+\subsection{Useful Organizational Tools}
+In this section, the light will be shed on the methodology adopted by our group for deciding the project's theme (ex: the brainstorming, the comparison matrix Prof. Bungartz has drawn on the flipchart, etc. ) and scrumming will be exposed . In addition, other facilitation tools such as Git, CMake, Valgrind, code references and StackOverflow repository (still don't even know how to thank Sebastian) will be discussed (Is this the proper section for those or should the be relocated)
+\subsubsection{Project's Selection For Dummies}
+\begin{itemize}
+\item \textbf{Brainstorming}: The first step in choosing a project is to set the sky as the limit for people to pour out their ideas all together in one pool, and most importantly, out-loud. Thus, people can generate more ideas and develop one another's. An important aspect to be aware of is not to let this stage take a very long time, since time in Ferienakademie is somehow restricted. Also, it would be very helpful to try to find common grounds between different ideas as soon as possible. For example, "all the proposed ideas will require a Kinect input interface" or "regardless the topic we eventually select, we will need an RB-LBM coupling framework". Reaching such conclusions early initiates the project in concurrancy with selecting/elaborating the ideas
+
+\item \textbf{Selection Matrix}: It is very crucial and helpful to decide upon some criteria to evaluate the "goodness" of the idea. It will be found that all ideas are creative and extravagent and one would wish to have such an output, but their charm might be lost after being judged subjectively against criteria such as:
+\begin{itemize}
+\item \textit{Usability: how easy the end-user can play this game or use this program? Will he/she need an intensive documentation or a direct supervised training or instructions to start using it correctly ?}
+\item \textit{Extensability: How far can we go beyond the first milestone ? Can we add more features to the project to make it more challenging ?}
+\item \textit{Audience-interest: How attractive it is for audience to watch the game ? For example, chess is a big fail even if you like it !!}
+\item \textit{Developers-interest: Are we eager to put all our effort for around 10-days on that project ?}
+\end{itemize}
+\end{itemize}
+
+
+\subsubsection{Scrumming !!}
+\textit{An idea about scrumming, what are they used for, the sort of updates discussed through them, etc.}
+
+\subsubsection{Code Handling Facilitators}
+\begin{itemize}
+\item \textbf{Git}\footnote{An alternative code management tool could be SVN}: for organized code sharing without conflicts, repository updating with current work, experimenting safely with developers' ideas on separate branches, managing conflicts between coders' work, etc.
+\item \textbf{CMake}: for a more neat and modular compilation of the whole project from one parent directory
+\item \textbf{Valgrind}: for debugging the code and hunting malicious code lines that result in segmentation faults and other nasty bugs
+\item \textbf{Unit-testing}\footnote{Boost provides a good unit testing tool for C++}: testing each block of code or every interface separately with hardcoded example data to make sure it is bug free and interacting safely with given input and providing sensible output before handling it to the other teams up- and downstream the pipeline
+\item \textbf{Code References}: since we were in an internet-deserted area, having an offline chest of language references and library documentation is worth a fortune. Useful documentations are library's supplier-provided documentation, c++ reference and an offline repository of stackoverflow (and might as well for other libraries used if no PDF documentation was found)
+\end{itemize}
+
+\subsection{Challenges and Obstacles}
+\itemize
+\item \textbf{Time constraint}: We held so many hikes, plus there were a couple of social gatherings and events such as the tournaments and the cultural evening, so what seems as two weeks of work boil down to much less time dedicated to the project. This aspect need to be taken into account when setting the milestones for the project.
+\item \textbf{Defining the project's topic}: Due to the multi-disciplinary background of the participants as well as various interests, the braintstorming session turns out really vibrant between different ideas. Notice should be drawn to common grounds and the manager(s) should at some point occlude the ongoing flow of ideas to agree on something.
+\item \textbf{Defining the milestones (be really to agile)}: One of the challenges faced in our projects was phrasin the first milestone deliverables thorough-enough. The first milestone deliverable should not have been just about "Create a game with the simplest fluid-structure interaction and only taking input from Kinect". Such a statement comprised too much of details to work on such as the level of details of rigid bodies capabilities. In addition, it required a comprehensive data handling system between different pipeline stages, which implied that each team should necessarily implement fully-working functionality in order to test the pipeline integrity (imagine how long could this have taken !!)
+A more efficient/agile approach was to set the first milestone deliverable to be "building and closing the pipeline with dummy data". This will crossout a milestone from the list and gives all the teams an insight about its interaction with the preceding and proceeding pipeline stages.
+\item \textbf{Testing the code}: With around 20 developers, each implementing a chunk, the code is very vulnerable to get broken by some mathematical fault in a function or a seg-fault in one group's code. This could be relatively avoided by unit-testing. Unit-testing is hard-coding an example to test the implemented methods to ensure they are giving the expected response. Although this requires an additional couple of hours to do, this, on the other hand, saves the programmers a lot of debugging time in case something cause wrong. This was extremely crucial in the interface between rigid bodies and LBM since a lot of data was transferred between the two codes.
+\item \textbf{Waterfalling}: Waterfall differs from agile management in that it treats the project as a one whole and the tangible output is only delivered at the end. This could be inefficient in projects like ours since waiting till the end since the developers might get demotivated as time passes without tangible output. Also, the project becomes more rigid to adding or modifying milestone deliverables for later stages. The risk of waterfalling is usually high when the first milestone is not clearly bounded and be made aware to the developers who end up endulging into coding and coding trying to achieve further on their blocks and delaying integration their parts with others on the pipeline.
+\item \textbf{Speaking German}: Although the course's official language is English, nevertheless, one can't hold a group of 90\% of germans to speak their mother language. In such an environment, non-formal meetings between developers (meaning small talks during coffee breaks, discussion over lunch, casual chats, etc.) encourage ideas flow and facilitate problem solving among developers as well as helps management to be updated with deeper details of the project's status. It is rather recommended that the managers' language skills in later courses is good enough to engage and comprehend such situations easily and not just rely on the English scrum meeting for udpates.
+
