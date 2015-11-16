@@ -10,6 +10,10 @@
 \usepackage{multicol}
 \usepackage{hyperref}
 \usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\newcommand{\tododone}[3][noinline]{\todo[#1, author = #2, color=green!40]{\textit{#3}}}
+\newcommand{\todointern}[3][noinline]{\todo[#1, author = #2, color=blue!40]{#3}}
+\newcommand{\todourgent}[3][noinline]{\todo[#1, author = #2, color=red!40]{\textbf{#3}}}
 
 \lstset{%
   showstringspaces=false,
@@ -36,6 +40,10 @@
 visualization}
 
 \maketitle
+
+\tableofcontents
+
+\listoftodos
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INTRODUCTION
