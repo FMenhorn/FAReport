@@ -1,3 +1,15 @@
-\section{Image processing}
+\section{Image Processing}
 
-Responsibility: To be decided!
+\begin{figure}
+\centering
+  \includegraphics[scale=0.6]{img/ImageProcessing/UML_ImgProc_PNG.png}
+\caption{UML diagram for the image processing code\label{fig:UMLImgProc}}
+\end{figure}
+
+One of Grand Theft Boat's USPs is the freedom for players to fully customize their level maps. Players can design complex maps replete with shorelines, connected water bodies, and floating spherical obstacles of varying radii. All this can be done using a simple computer graphics software like Gimp (Linux), MS Paint (Windows) and Paintbrush (Mac). 
+
+In order to extract information about the terrain and participating bodies, the team relied on processing the input image through extensive use of the OpenCV library. This chapter describes the workflow involved in this stage. The broad structure of the image processing code is shown in Figure \ref{fig:UMLImgProc}.
+
+\input{Sections/ImageProcessing/SubSections/InputImage.tex}
+
+\input{Sections/ImageProcessing/SubSections/PreProc.tex}

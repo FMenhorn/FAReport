@@ -1,0 +1,26 @@
+\subsection{Pre-Processing}
+
+The input image undergoes the following sequence of filters:
+
+\begin{enumerate}
+	\item \textit{Flip image}: 
+	
+	\verb|img = img::flip(img, true, false);|
+	
+	Flipping the image along the y-axis is necessary because the coordinate system of a standard image has its origin on the top-left corner, while standard fluid codes begin indexing from the bottom-left corner.
+
+	\item \textit{Gaussian filter and opening}
+
+	\verb|blurred = img::gaussianFilter(img, 7, 2);|
+
+	\verb|opened = img::opening(blurred, structuringElement, 2);|
+	
+	The gaussian filter and opening helps eliminates fuzzy borders of adjacent colors, making them sharper.
+
+	\item \textit{Thresholding}
+
+	\verb|thresholded = applyThresholding(opened);|
+	
+	Thresholding applies yes-no filters on the image based on the colors of different domain types.
+
+\end{enumerate}
