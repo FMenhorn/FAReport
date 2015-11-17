@@ -6,3 +6,5 @@ project.pdf
 *~
 *.tdo
 *.toc
+*.bbl
+*.blg
