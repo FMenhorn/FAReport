@@ -1,7 +1,7 @@
 \section{Rigid Body Simulation}
 \tododone[inline]{Benni}{responsible for section \textbf{RB}: Friedrich}
 
-The goal of this project was to develop a game which is based on a real time physics simulation for fluid flow, rigid bodies as well as their interaction. Our main task was hence the collision detection and collision handling between the different objects, while the interface to the fluid group gives us the necessary interaction from the fluid on the bodies and vice versa. While the interaction between simple shapes like circles and rectangles is manageable, it becomes more complex for polygons. Therefore, whereas the fluid group implemented their own LBM solver, we decided to adapt the real-time physics library Bullet \cite{bullet} \tododone{Friedi}{cite here} for the rigid body handling. By doing this, we did not have to invent the wheel anew. Furthermore, Bullet gives a lot of possibilities for extensions to the program offering a variety of different complex shapes for example. Hence, the first approach was to implement Bullet using simple shapes, such as circles and rectangles and then move on to more complex polygons.
+The goal of this project was to develop a game which is based on a real time physics simulation for fluid flow, rigid bodies as well as their interaction. Our main task was hence the collision detection and collision handling between the different objects, while the interface to the fluid group gives us the necessary interaction from the fluid on the bodies and vice versa. While the interaction between simple shapes like circles and rectangles is manageable, it becomes more complex for polygons. Therefore, whereas the fluid group implemented their own LBM solver, we decided to adapt the real-time physics library Bullet \cite{Bullet} for the rigid body handling. By doing this, we did not have to invent the wheel anew. Furthermore, Bullet gives a lot of possibilities for extensions to the program offering a variety of different complex shapes for example. Hence, the first approach was to implement Bullet using simple shapes, such as circles and rectangles and then move on to more complex polygons.
 %\begin{itemize}
 %\item simulation driven game one half LBM, one half RB
 %\item RB simulation is very simple for circles, becomes more complicated for rectangles and gets a real problem for polygons and other complex stuff. Our strategy: Wrap a fully developed RB engine and use its functionality
@@ -9,9 +9,9 @@ The goal of this project was to develop a game which is based on a real time phy
 %\end{itemize}
 
 \subsection{Bullet}
-As a consequence, our first task in this project was to get Bullet running on multiple layers-- understanding the library as well as using it in our project. This task, as simple as it might seem at first sight, already included(????) some pitfalls, which we hope to diminish for the next group with the help of this report. 
+As a consequence, our first task in this project was to get Bullet running on multiple layers-- understanding the library as well as using it in our project. This task, as simple as it might seem at first sight, already included some pitfalls, which we hope to diminish for the next group with the help of this report. 
 \subsubsection{Building}
-To build bullet, you need cmake \cite{cmake} \tododone{Friedi}{cite here}. After having downloaded the Bullet library from their webpage, one can follow the instructions below to build the library:
+To build bullet, you need cmake \cite{CMake}. After having downloaded the Bullet library from their webpage, one can follow the instructions below to build the library:
 \begin{enumerate}
 \item Extract the \verb+fa/sources-for-rigidbody/bullet3-2.83.6.tar.gz +
 \item run \verb+cmake . + in the top directory.
@@ -20,7 +20,7 @@ To build bullet, you need cmake \cite{cmake} \tododone{Friedi}{cite here}. After
 \end{enumerate}
 Afterwards, link to the library in your compilation (usually \verb+/usr/local/include/bullet+)
 \subsubsection{Functionality we used}
-We had three basic classes from Bullet which we used. The first was \verb+btDiscreteDynamicsWorld+, see \autoref{fig: btDDWgraph}. As the class name already states, \verb+btDiscreteDynamicsWorld+ can be seen as the world where the rigid body simulation takes place. It contains all the rigid bodies and all important world parameter, like gravity and size of a timestep for example. By calling \verb+stepSimulation+ on the world, Bullet performs one simulation step on all the rigid bodies in the world.
+We had three basic classes from Bullet which we used. The first was \verb+btDiscreteDynamicsWorld+, see \autoref{fig: btDDWgraph}. As the class name already states, \verb+btDiscreteDynamicsWorld+ can be seen as the world where the rigid body simulation takes place. It contains all the rigid bodies and all important world parameter, like gravity and size of a timestep for example. By calling \verb+stepSimulation()+ on the world, Bullet performs one simulation step on all the rigid bodies in the world.
 \begin{figure}
 \centering
 \includegraphics[scale=0.5]{img/RigidBodies/btDiscreteDynamicsWorldGraph.png}
@@ -29,7 +29,7 @@ We had three basic classes from Bullet which we used. The first was \verb+btDisc
 \end{figure}
 
 
-With that, we directly come to rigid body class from Bullet which we used-- \verb+btRigidBody+, see \autoref{fig: btRBgraph}. It is the main class of Bullet for rigid body objects. The library offers three kinds of rigid bodies objects in the library:
+With that, we directly come to rigid body class from Bullet which we used-- \verb+btRigidBody+, see \autoref{fig: btRBgraph}. It is the main class of Bullet for rigid body objects. The library offers three kinds of rigid bodies objects:
 \begin{enumerate}
 \item Dynamic rigid bodies, with positive mass. Motion is controlled by rigid body dynamics.
 \item Fixed objects with zero mass. They are not moving (basically collision objects)
@@ -37,9 +37,9 @@ With that, we directly come to rigid body class from Bullet which we used-- \ver
 \end{enumerate}
 We used objects of type 1. and 2., which we controlled by assigning them the corresponding mass. Hence, we could build dynamic (floating obstacles) and static objects (walls, boundaries) in our simulation. Furthermore, the \texttt{btRigidBody} class offers methods to access the properties of the objects such as 
 \begin{itemize}
-\item \texttt{getTotalForce:} Returning the force applied on the object
-\item \texttt{getLinearVelocity:} Returning the linear velocity
-\item \texttt{getCenterOfMass:} Returning the current center of mass
+\item \texttt{getTotalForce():} Returning the force applied on the object
+\item \texttt{getLinearVelocity():} Returning the linear velocity
+\item \texttt{getCenterOfMass():} Returning the current center of mass
 \end{itemize}
 to name a few. 
 \begin{figure}
@@ -50,55 +50,49 @@ to name a few.
 \end{figure}
 
 
-Finally, Bullet also offers the possibility to assign a shape to a \texttt{btRigidBody} object. Here, a shape object can be more seen as a pattern then an actual object, since multiple rigid bodies can share the same shape object. The class in Bullet is called \texttt{btCollisionShape}, see \autoref{fig: btCSgraph}. The whole purpose of this picture is to illustrate the amount of different shapes this family of classes provide. From convex shapes over concave shapes to compound shapes which one can design by himself. The two interesting shapes that we used are \texttt{btCylinderShape} and \texttt{btBoxShape}, see \autoref{fig: btCylSgraph} and \autoref{fig: btBoxSgraph}. By assigning a height of one to the cylinder we received a circle shape and the box shape was used for rectangles and squares.
-\begin{figure}
+Finally, Bullet also offers the possibility to assign a shape to a \texttt{btRigidBody} object. Here, a shape object can be more seen as a pattern then an actual object, since multiple rigid bodies can share the same shape object. The class in Bullet is called \texttt{btCollisionShape}. See \autoref{fig: btCSgraph}, for an inheritance diagram which shows the amount of different shapes this family of classes provide. From convex shapes over concave shapes to compound shapes which one can design by himself. The two interesting shapes that we used are \texttt{btCylinderShape} and \texttt{btBoxShape}, see \autoref{fig: btCylSgraph} and \autoref{fig: btBoxSgraph}. By assigning a height of one to the cylinder we received a circle shape; the box shape was used for rectangles and squares.
+\begin{figure}[ht]
 \centering
-\includegraphics[scale=0.2]{img/RigidBodies/btCollisionShapeGraph.png}
-\caption{Inheritance diagram of \texttt{btCollisionShape}}
-\label{fig: btCSgraph}
-\end{figure}
-
-\begin{figure}
+\begin{minipage}{.45\linewidth}
 \centering
-\includegraphics[scale=0.2]{img/RigidBodies/btCylinderShapeGraph.png}
+\includegraphics[scale=0.5]{img/RigidBodies/btCylinderShapeGraph.png}
 \caption{Inheritance diagram of \texttt{btCylinderShape}}
 \label{fig: btCylSgraph}
-\end{figure}
-\begin{figure}
+\end{minipage}
+\hspace{.05\linewidth}
+\begin{minipage}{.45\linewidth}
 \centering
-\includegraphics[scale=0.2]{img/RigidBodies/btBoxShapeGraph.png}
+\includegraphics[scale=0.5]{img/RigidBodies/btBoxShapeGraph.png}
 \caption{Inheritance diagram of \texttt{btBoxShapeGraph}}
 \label{fig: btBoxSgraph}
+\end{minipage}
 \end{figure}
 
 \subsubsection{Implementation}
-In the implementation, we developed our own class which we named \texttt{RBObject} and \texttt{RBShape} which were basically wrappers for the bullet classes. The two specific shapes, we implemented by now are \texttt{RBCircle} and \texttt{RBRectangle}, see \autoref{fig: RBShape}. \texttt{RBObject} on the other hand includes all the methods from Bullet which we need to transfer for the LBM simulation and the visualization. 
-\begin{figure}
+In the implementation, we developed our own classes which we named \texttt{RBObject} and \texttt{RBShape} and which were basically wrappers for the bullet classes. The two specific shapes, we implemented by now are \texttt{RBCircle} and \texttt{RBRectangle}, see \autoref{fig: RBShape}. \texttt{RBObject} on the other hand includes all the methods from Bullet which we need to transfer information for the LBM simulation and the visualization. 
+\begin{figure}[ht]
 \centering
-\includegraphics[scale=0.2]{img/RigidBodies/RBShapeGraph.png}
+\includegraphics[scale=0.5]{img/RigidBodies/RBShapeGraph.png}
 \caption{Inheritance diagram of \texttt{RBShape}}
 \label{fig: RBShape}
 \end{figure}
 
-We furthermore wrote a class \texttt{RBCollection} which was a container class for all generated \texttt{RBObjects}. \texttt{RBCollection} was also responsible for the communication to LBM and visualization, since it is a derived class from \texttt{CPipelinePacket}. With methods like 
+We furthermore wrote a class \texttt{RBCollection} which is a container class for all generated \texttt{RBObjects}. \texttt{RBCollection} is also responsible for the communication to LBM and visualization, since it is a derived class from \texttt{CPipelinePacket}. With methods like 
 \begin{itemize}
 \item \texttt{getLBMOBjectWrapperBegin()}
 \item \texttt{getPayloadRaw()}
 \end{itemize} 
-it gave access to different informations transferred between the stages. 
+it gives access to different informations transferred between the stages. 
 
 
-The class \texttt{RBManager} had a \texttt{btDiscreteDynamicWorld} as member and control over the \texttt{RBCollection} and was hence responsible for the simulation. By calling the class method \texttt{doTimeStep} one implicitly called the method \texttt{stepSimulation} of \texttt{btDiscreteDynamicWorld}. Furthermore, \texttt{RBManager} was responsible for setting up the correct world with the help of the methods 
+The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member and control over the \texttt{RBCollection} and is hence responsible for the simulation. By calling the class method \texttt{doTimeStep} one implicitly calls the method \texttt{stepSimulation} of \texttt{btDiscreteDynamicWorld}. Furthermore, \texttt{RBManager} is responsible for setting up the correct world with the help of the methods 
 \begin{itemize}
 \item \texttt{addNewRigidBody():} Adds a new rigid body to \texttt{RBCollection} and \texttt{btDiscreteDynamicWorld}.
 \item \texttt{setUpIslands():} Sets up the islands sent from image processing.
 \item \texttt{setUpBoundary():} Sets up the boundary sent from image processing.
 \end{itemize}
 
-%\begin{itemize}
-%\item Only explain bullet's functionality, we actually used
-%\item also explain our pitfalls (there have been plenty situations where we thought: come on bullet... that just doesn't make sense...)
-%\end{itemize}
+All of these classes are documented with the help of Doxygen \cite{Doxygen}.
 
 \subsubsection{Discussion}
 \tododone[inline]{Benni}{responsible for \textbf{Discussion} on RB and Bullet: Erik, Friedrich, Benni}
