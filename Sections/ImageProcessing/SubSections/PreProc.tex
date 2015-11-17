@@ -1,6 +1,6 @@
 \subsection{Pre-Processing}
 
-The input image undergoes the following sequence of filters:
+Many times, the image supplied by the player may need to be pre-processed for improving boundaries between terrain types. Once given as input to the \verb|ProcessingManager|, the input image undergoes the following sequence of filters:
 
 \begin{enumerate}
 	\item \textit{Flip image}: 
@@ -15,7 +15,7 @@ The input image undergoes the following sequence of filters:
 
 	\verb|opened = img::opening(blurred, structuringElement, 2);|
 	
-	The gaussian filter and opening helps eliminates fuzzy borders of adjacent colors, making them sharper.
+	The gaussian filter and opening helps eliminates fuzzy borders of adjacent colors, making them sharper. See Figure \ref{LevelImages}(a).
 
 	\item \textit{Thresholding}
 
