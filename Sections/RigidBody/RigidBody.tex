@@ -107,10 +107,18 @@ All of these classes are documented with the help of Doxygen \cite{Doxygen}. Hen
 
 \subsection{Interfaces}
 \tododone[inline]{Benni}{responsible for subsection \textbf{Interfaces} of RB: Friedrich}
+As it turned out during the project, the actual more complex task was to get the interfaces running between the different groups. Rigid bodies needed interaction with all of them:
 \begin{itemize}
-\item RB have many interfaces! Most complex to LBM, but also many more interfaces with different demands.
-\item discrete version(LBM, ImgRecognition) vs. continuous version(Visu, RB Internal) of RBs
+\item \textbf{Input devices:} Boat is a rigid body and forces are applied from input devices
+\item \textbf{Image recognition:} Sends the terrain information which is then implemented as rigid bodies
+\item \textbf{Visualization:} Correct visualization of objects depending on their properties
+\item \textbf{LBM:} Fluid-structure interaction between flow and objects
 \end{itemize}
+Hence, the correct implementation of the interfaces was an important task, since if they are not working the whole project gets stuck. In the following sections, we want to explain the implementations of the different interfaces to the other groups in more detail.
+%\begin{itemize}
+%\item RB have many interfaces! Most complex to LBM, but also many more interfaces with different demands.
+%\item discrete version(LBM, ImgRecognition) vs. continuous version(Visu, RB Internal) of RBs
+%\end{itemize}
 \subsubsection{to Input Devices}
 \tododone[inline]{Benni}{responsible for interface from RB \textbf{to Input Devices}: Erik?}
 \begin{itemize}
