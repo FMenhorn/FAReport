@@ -128,10 +128,18 @@ Hence, the correct implementation of the interfaces was an important task, since
 \end{itemize}
 \subsubsection{to Image Recognition}
 \tododone[inline]{Benni}{responsible for interface from RB \textbf{to Image Recognition}: Friedrich}
+The interface to image recognition worked basically with the help of the \texttt{ProcessingManager} class which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries, rigid and static bodies. The methods we used were
 \begin{itemize}
-\item how to model boundaries
-\item how to create different rigid bodies
-\end{itemize}
+\item \texttt{boatCenters(): std::vector<cv::Vec2f>} returning a 2D vector with the position of the boats.
+\item \texttt{outerBorder(): Polygon} returning a \texttt{Polygon} which holds the structure of the outer border
+\item \texttt{rigidBodies(): std::vector<Polygon>} returning all rigid bodies, stored as \texttt{Polygons}
+\item \texttt{staticBodies(): std::vector<Polygon>} returning all static bodies, stored as \texttt{Polygons}
+\end{itemize} 
+That means for each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can calculate a center of mass. For rigid bodies (static or dynamic) we calculated the mean $x$ and $y$ position of the polygon points. By connecting the polygon points one after another we set up the boundary. The mass and shape is assigned depending on the type of the body. In the end, the new objects are added to the \texttt{btDiscreteDynamicWorld} and to \texttt{RBCollection}.
+%\begin{itemize}
+%\item how to model boundaries
+%\item how to create different rigid bodies
+%\end{itemize}
 \subsubsection{to Visualization}
 \tododone[inline]{Benni}{responsible for interface from RB \textbf{to Visualization}: Benni?}
 \begin{itemize}
