@@ -92,7 +92,13 @@ The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member and
 \item \texttt{setUpBoundary():} Sets up the boundary sent from image processing.
 \end{itemize}
 
-All of these classes are documented with the help of Doxygen \cite{Doxygen}. Hence, to get a more detailed informations about the properties, members and methods of each class, create the Doxygen documentation by calling \texttt{doxygen Doxyfile} in the top most folder of the source code. The main page of the documentation can then be found in \texttt{/html/index.html}.
+All of these classes are documented with the help of Doxygen \cite{Doxygen}. Hence, to get a more detailed informations about the properties, members and methods of each class, create the Doxygen documentation by calling \texttt{doxygen Doxyfile} in the top most folder of the source code. The main page of the documentation can then be found in \texttt{/html/index.html}. Here, we only want to show the general structure with the help of an UML diagram. It is depicted in \autoref{fig: RBUMLgraph}. The diagram only shows a few of the most important methods, rather focussing on the connection between the classes.
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.5]{img/RigidBodies/RigidBodyUML.png}
+\caption{UML diagram of rigid body classes}
+\label{fig: RBUMLgraph}
+\end{figure}
 
 \subsubsection{Discussion}
 \tododone[inline]{Benni}{responsible for \textbf{Discussion} on RB and Bullet: Erik, Friedrich, Benni}
@@ -128,7 +134,7 @@ Hence, the correct implementation of the interfaces was an important task, since
 \end{itemize}
 \subsubsection{to Image Recognition}
 \tododone[inline]{Benni}{responsible for interface from RB \textbf{to Image Recognition}: Friedrich}
-The interface to image recognition worked basically with the help of the \texttt{ProcessingManager} class which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries, rigid and static bodies. The methods we used were
+The interface to image recognition works with the help of the \texttt{ProcessingManager} class (as also already described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries, rigid and static bodies. The methods we used were
 \begin{itemize}
 \item \texttt{boatCenters(): std::vector<cv::Vec2f>} returning a 2D vector with the position of the boats.
 \item \texttt{outerBorder(): Polygon} returning a \texttt{Polygon} which holds the structure of the outer border
