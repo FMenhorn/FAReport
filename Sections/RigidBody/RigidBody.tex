@@ -69,7 +69,16 @@ Finally, Bullet also offers the possibility to assign a shape to a \texttt{btRig
 \end{figure}
 
 \subsubsection{Implementation}
-In the implementation, we developed our own classes which we named \texttt{RBObject} and \texttt{RBShape} and which were basically wrappers for the bullet classes. The two specific shapes, we implemented by now are \texttt{RBCircle} and \texttt{RBRectangle}, see \autoref{fig: RBShape}. \texttt{RBObject} on the other hand includes all the methods from Bullet which we need to transfer information for the LBM simulation and the visualization. 
+In this section we want to take a look at our actual implementation. For that, the general structure is depicted with the help of an UML diagram, see \autoref{fig: RBUMLgraph}. The diagram shows a few of the most important methods, rather focussing on the connection between the classes and the general structure. In the following, we want to give a simple introduction to the individual classes. All of them are also documented with the help of Doxygen \cite{Doxygen}. Hence, to get a more detailed informations about the properties, members and methods of each class, create the Doxygen documentation by calling \texttt{doxygen Doxyfile} in the top most folder of the source code. The main page of the documentation can then be found in \texttt{/html/index.html}.
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.5]{img/RigidBodies/RigidBodyUML.png}
+\caption{UML diagram of rigid body classes}
+\label{fig: RBUMLgraph}
+\end{figure}
+
+\subsubsection*{RBObject and RBShape}
+To wrap Bullet, we developed our own classes which we named \texttt{RBObject} and \texttt{RBShape}, which wrap \texttt{btRigidBody} and \texttt{btCollisionShape} respectively. The two specific shapes, we implemented by now are \texttt{RBCircle} and \texttt{RBRectangle}, see \autoref{fig: RBShape} for the specific inheritance diagram. \texttt{RBObject} on the other hand includes all the methods from Bullet which we need to transfer information for the LBM simulation and the visualization. 
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.5]{img/RigidBodies/RBShapeGraph.png}
@@ -77,6 +86,7 @@ In the implementation, we developed our own classes which we named \texttt{RBObj
 \label{fig: RBShape}
 \end{figure}
 
+\subsubsection*{RBCollection}
 We furthermore wrote a class \texttt{RBCollection} which is a container class for all generated \texttt{RBObjects}. \texttt{RBCollection} is also responsible for the communication to LBM and visualization, since it is a derived class from \texttt{CPipelinePacket}. With methods like 
 \begin{itemize}
 \item \texttt{getLBMOBjectWrapperBegin()}
@@ -84,21 +94,13 @@ We furthermore wrote a class \texttt{RBCollection} which is a container class fo
 \end{itemize} 
 it gives access to different informations transferred between the stages. 
 
-
+\subsubsection*{RBManager}
 The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member and control over the \texttt{RBCollection} and is hence responsible for the simulation. By calling the class method \texttt{doTimeStep} one implicitly calls the method \texttt{stepSimulation} of \texttt{btDiscreteDynamicWorld}. Furthermore, \texttt{RBManager} is responsible for setting up the correct world with the help of the methods 
 \begin{itemize}
 \item \texttt{addNewRigidBody():} Adds a new rigid body to \texttt{RBCollection} and \texttt{btDiscreteDynamicWorld}.
 \item \texttt{setUpIslands():} Sets up the islands sent from image processing.
 \item \texttt{setUpBoundary():} Sets up the boundary sent from image processing.
 \end{itemize}
-
-All of these classes are documented with the help of Doxygen \cite{Doxygen}. Hence, to get a more detailed informations about the properties, members and methods of each class, create the Doxygen documentation by calling \texttt{doxygen Doxyfile} in the top most folder of the source code. The main page of the documentation can then be found in \texttt{/html/index.html}. Here, we only want to show the general structure with the help of an UML diagram. It is depicted in \autoref{fig: RBUMLgraph}. The diagram only shows a few of the most important methods, rather focussing on the connection between the classes.
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.5]{img/RigidBodies/RigidBodyUML.png}
-\caption{UML diagram of rigid body classes}
-\label{fig: RBUMLgraph}
-\end{figure}
 
 \subsubsection{Discussion}
 \tododone[inline]{Benni}{responsible for \textbf{Discussion} on RB and Bullet: Erik, Friedrich, Benni}
