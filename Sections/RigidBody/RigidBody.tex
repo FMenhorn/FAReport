@@ -1,5 +1,5 @@
 \section{Rigid Body Simulation}
-\tododone[inline]{Benni}{responsible for section \textbf{RB}: Friedrich}
+\tododone[inline]{Benni}{responsible for section \textbf{RB}: Friedrich -- DONE}
 
 The goal of this project was to develop a game which is based on a real time physics simulation for fluid flow, rigid bodies as well as their interaction. The main task of the rigid body group was hence the collision detection and collision handling between the different objects, while the interface to the fluid group gives us the necessary interaction from the fluid on the bodies and vice versa. While the interaction between simple shapes like circles and rectangles is manageable, it becomes more complex for polygons. Therefore, whereas the fluid group implemented their own LBM solver, we decided to adapt the real-time physics library Bullet \cite{Bullet} for the rigid body handling. By doing this, we did not have to invent the wheel anew. Furthermore, Bullet gives a lot of possibilities for extensions to the program offering a variety of different complex shapes for example. Hence, the first approach was to implement Bullet using simple shapes, such as circles and rectangles and then move on to more complex polygons.
 %\begin{itemize}
@@ -11,14 +11,14 @@ The goal of this project was to develop a game which is based on a real time phy
 \subsection{Bullet}
 As a consequence, our first task in this project was to get Bullet running on multiple layers-- i.e. understanding the library as well as using it in our project. This task, as simple as it might seem at first sight, already included some pitfalls, which we hope to diminish for the next group with the help of this report. 
 \subsubsection{Building}
-To build bullet, you need cmake \cite{CMake}. After having downloaded the Bullet library from their webpage, one can follow the instructions below to build the library:
+To build bullet, one needs cmake \cite{CMake}. After having downloaded the Bullet library from their webpage, one can follow the instructions below to build it:
 \begin{enumerate}
 \item Extract the \verb+fa/sources-for-rigidbody/bullet3-2.83.6.tar.gz +
 \item run \verb+cmake . + in the top directory.
 \item run \verb+make -j4+ (\verb+-j4+ chooses 4 threads for compilation) in the top directory.
 \item run \verb+sudo make install + in the \verb+src+ directory.
 \end{enumerate}
-Afterwards, link to the library in your compilation (usually \verb+/usr/local/include/bullet+ and \verb+-L/usr/local/lib+)
+Afterwards, one has to link to the library in the compilation (usually \verb+/usr/local/include/bullet+ and \verb+-L/usr/local/lib+)
 \subsubsection{Functionality we used}
 We had three basic classes from Bullet which we used. The first was \verb+btDiscreteDynamicsWorld+, see \autoref{fig: btDDWgraph}. As the class name already states, \verb+btDiscreteDynamicsWorld+ can be seen as the world where the rigid body simulation takes place. It contains all the rigid bodies and all important world parameter, like gravity and size of a timestep for example. By calling \verb+stepSimulation()+ on the world, Bullet performs one simulation step on all the rigid bodies in the world.
 \begin{figure}
@@ -117,7 +117,7 @@ The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member, co
 \end{itemize}
 
 \subsection{Interfaces}
-\tododone[inline]{Benni}{responsible for subsection \textbf{Interfaces} of RB: Friedrich}
+\tododone[inline]{Benni}{responsible for subsection \textbf{Interfaces} of RB: Friedrich -- DONE}
 As it turned out during the project, the actual more complex task was to get the interfaces running between the different groups. Rigid bodies needed interaction with all of them:
 \begin{itemize}
 \item \textbf{Input devices:} Boat is a rigid body and forces are applied from input devices
@@ -139,7 +139,7 @@ Hence, the correct implementation of the interfaces was an important task, since
 \end{itemize}
 \subsubsection{to Image Recognition}
 \label{sec: interfaceImageRecognition}
-\tododone[inline]{Benni}{responsible for interface from RB \textbf{to Image Recognition}: Friedrich}
+\tododone[inline]{Benni}{responsible for interface from RB \textbf{to Image Recognition}: Friedrich -- DONE}
 The interface to image recognition works with the help of the \texttt{ProcessingManager} class (as also already described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries, rigid and static bodies. The methods of \texttt{ProcessingManager} which we used were:
 \begin{itemize}
 \item \texttt{boatCenters(): std::vector<cv::Vec2f>} returning a 2D vector with the position of the boats.
