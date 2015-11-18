@@ -72,7 +72,7 @@ Finally, Bullet also offers the possibility to assign a shape to a \texttt{btRig
 In this section we want to take a look at our actual implementation. For that, the general structure is depicted with the help of an UML diagram, see \autoref{fig: RBUMLgraph}. Although the diagram shows a few of the most important methods, it focus lays more on the connection between the classes and the general structure. In the following, we want to give a simple introduction to the individual classes. All of them are also documented with the help of Doxygen \cite{Doxygen}. Hence, to get a more detailed informations about the properties, members and methods of each class, create the Doxygen documentation by calling \texttt{doxygen Doxyfile} in the top most folder of the source code. The main page of the documentation can then be found in \texttt{/html/index.html}.
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.5]{img/RigidBodies/RigidBodyUML.png}
+\includegraphics[scale=0.42]{img/RigidBodies/RigidBodyUML.png}
 \caption{UML diagram of rigid body classes}
 \label{fig: RBUMLgraph}
 \end{figure}
@@ -147,7 +147,18 @@ The interface to image recognition works with the help of the \texttt{Processing
 \item \texttt{rigidBodies(): std::vector<Polygon>} returning all rigid bodies, stored as \texttt{Polygons}
 \item \texttt{staticBodies(): std::vector<Polygon>} returning all static bodies, stored as \texttt{Polygons}
 \end{itemize} 
-The corresponding methods which calls them in \texttt{RBManager} were already described in \autoref{sec: rbManager}.
+The corresponding private methods which call them were already described in \autoref{sec: rbManager} and are used by the public methods
+\begin{itemize}
+\item \texttt{initObjects():} setting up the boundary and the islands
+\item \texttt{handlePlayerArray():} setting up the rigid bodies and the boats
+\end{itemize}
+of \texttt{RBManager}. The interface is also visualised as an UML diagram in \autoref{fig: interfaceRBIR}.
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.5]{img/RigidBodies/InterfaceRBImageRecogniton.png}
+\caption{Interface between rigid bodies and image recognition.}
+\label{fig: interfaceRBIR}
+\end{figure}
 
 
 For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can now calculate a center of mass. For rigid bodies (static or dynamic) we calculated the mean position of the polygon points as center of mass $\overrightarrow{x}$ and also the mean deviation $\hat{r}$ to approximate a radius $r$. By connecting the polygon points one after another with the help of rectangular shaped rigid bodies, we set up the boundary. The mass and shape is assigned depending on the type of the body and its volume (mass=0: static body, mass$>$0: dynamic body). We end up with four different kinds of rigid bodies which we approximated.
@@ -155,7 +166,7 @@ For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can now 
 \item \textbf{Boats:} RBCircle with position $\overrightarrow{x}$, radius $r=20$, mass$=0.6e4$ and moment of inertia$=1.2e7$.
 \item \textbf{Islands:} RBCircle with position $\overrightarrow{x}$, radius $r=\hat{r}$, mass$=0$ and moment of inertia$=0$.
 \item \textbf{Floating Objects:} RBCircle with position $\overrightarrow{x}$, radius $r=\hat{r}$, mass$=r^2$, and moment of inertia $=0$.
-\item \textbf{Boundary:} RBRectangle connecting points of polygon, mass$=0$ and moment of inertia $=0$.
+\item \textbf{Boundary:} RBRectangles connecting points of polygon, mass$=0$ and moment of inertia $=0$.
 \end{itemize}
 In the end, these new objects are added to the \texttt{btDiscreteDynamicWorld} and to \texttt{RBCollection}.
 
