@@ -1,0 +1,61 @@
+Wichtige Dateien / Ordner:
+- src/CStage_VideoOutput.cpp:
+	Die Hauptkomponente der Visualisierung
+- src/shader/
+	Die einzelnen OpenGL Shader (relativ uninteressant)
+- src/video/
+	Helferklassen
+
+
+Allgemein:
+- Visualisierung basiert praktisch komplett auf reinem OpenGL
+	- Grund dafür war, dass wir das alle halbwegs konnten, während wir von SDL keine Ahnung hatten :)
+	- Nachteil ist, dass OpenGL sehr nah an der Hardware und daher ziemlich klobig ist
+- Initialisierung:
+	- Konstruktor von "CStage_VideoOutput"
+	- Am Anfang wird das flag field einmalig geladen
+- Pipeline Input:
+	- Methode "CStage_VideoOutput::pipeline_process_input"
+	- Liest Input der Pipeline (falls welcher da ist) und speichert ihn als internen Zustand ab
+	- Input können das gesamte flow field und die ganzen rigid bodies sein
+	- Das flag field wird ignoriert (offensichtlich ein TODO ^^)
+- Main loop:
+	- Methode "CStage_VideoOutput::main_loop_callback"
+	- Rendert die gesamte Szene auf Basis des aktuell vorhandenen Zustands
+- Szene:
+	- Die Szene selbst besteht aus mehreren Schichten
+		- Untergrund (Wasser / Land) -> mehrere verschiedene Implementierungen (siehe unten)
+		- Finish Line -> "CStage_VideoOutput::draw_finish_line()"
+		- Arrows -> "CStage_VideoOutput::draw_arrow_field()"
+		- Rigid bodies -> "CStage_VideoOutput::draw_rigid_bodies()"
+		- Text -> direkt innerhalb von "CStage_VideoOutput::draw_scene()"
+	- Die Reihenfolg, in der man die Schichten rendert ist verhältnismäßig egal, da alle Schichten sich auf unterschiedlichen Höhen befinden
+- Flow field visualization Implementierungen:
+	- Alle Implementierungen haben gemein, dass sie am Ende mittels des Flag fields Land und Wasser zusammenblenden
+	- statisch ohne Bewegung: "CStage_VideoOutput::draw_water_base()"
+		- Primitiv, aber fürs Debugging nützlich
+	- statische Schwingung: "CStage_VideoOutput::draw_water_wobbly()"
+		- Idee zugunsten anderer Ideen nicht weiterverfolgt
+		- Sollte entfernt werden
+	- Line integral convolution (LIC): "CStage_VideoOutput::draw_water_lic()"
+		- Idee zugunsten von anderer Technik nicht fertig optimiert)
+		- Sollte entfernt werden
+	- Finale version: "CStage_VideoOutput::draw_heightmap_fancy()"
+		- Grundprinzip ist das von LIC, aber etwas komplizierter
+		- Könnte noch deutlich optimiert werden
+		- In einem ersten Schritt ("CStage_VideoOutput::draw_heightmap_step()") wird eine Eingabetextur Pixel-für-Pixel anhand des Flow-fields verschoben (-> Grundidee von LIC)
+		- Das Resultat wird dann gerendert und dient im nächsten Schritt wieder als Eingabetextur
+		- Nachdem das Verfahren sehr schnell eine hübsche Eingabetextur zur einem Brei blurrt, wird stetig die Original Wasser-Textur "untergemischt", damit ihre Struktur erhalten bleibt		
+- Kamera:
+	- Orthografische Kamera, die von oben auf die Szene blickt
+	- Dynamische Bewegung -> "CStage_VideoOutput::follow_focus()"
+- Steuerung:
+	- Keys, die mit der Visualisierung zusammenhängen, handeln wird selbst in "CStage_VideoOutput::sdl_handle_key_down()"
+	- Dienen dazu, die Kamera zu steuern und Debug Output zu toggeln
+- Debug Stuff:
+	- Methode "CStage_VideoOutput::draw_velocityField()" zeichnet eine Art Heatmap des Flow fields
+		- Roter Farbkanal entspricht der Länge eines Flow field vectors
+		- Die übrigen Farbkanäle Grün und Blau sind aktuell nur 0
+		-> Je roter, desto schneller ist das flow field, Richtungen sind aber nicht visualisiert
+	- Collision boundaries werden analog zu rigid bodies behandelt (CStage_VideoOutput::draw_rigid_bodies()")
+
