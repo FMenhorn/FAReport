@@ -164,14 +164,14 @@ of \texttt{RBManager}. The interface is also visualised as an UML diagram in \au
 \end{figure}
 
 
-For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can now calculate a center of mass. For rigid bodies (static or dynamic) we calculated the mean position of the polygon points as center of mass $\overrightarrow{x}$ and also the mean deviation $\hat{r}$ to approximate a radius $r$. By connecting the polygon points one after another with the help of rectangular shaped rigid bodies, we set up the boundary. The mass and shape is assigned depending on the type of the body and its volume (mass=0: static body, mass$>$0: dynamic body). We end up with four different kinds of rigid bodies which we approximated.
+For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can now calculate a center of mass. For rigid bodies (static or dynamic) we calculated the mean position of the polygon points as center of mass $\vec{x}$ and also the mean deviation $\hat{r}$ to approximate a radius $r$. By connecting the polygon points one after another with the help of rectangular shaped rigid bodies, we set up the boundary. The mass and shape is assigned depending on the type of the body and its volume (mass=0: static body, mass$>$0: dynamic body). We end up with four different kinds of rigid bodies which we approximated.
 \begin{itemize}
-\item \textbf{Boats:} RBCircle with position $\overrightarrow{x}$, radius $r=20$, mass$=0.6e4$ and moment of inertia$=1.2e7$.
-\item \textbf{Islands:} RBCircle with position $\overrightarrow{x}$, radius $r=\hat{r}$, mass$=0$ and moment of inertia$=0$.
-\item \textbf{Floating Objects:} RBCircle with position $\overrightarrow{x}$, radius $r=\hat{r}$, mass$=r^2$, and moment of inertia $=0$.
+\item \textbf{Boats:} RBCircle with position $\vec{x}$, radius $r=20$, mass$=0.6e4$ and moment of inertia$=1.2e7$.
+\item \textbf{Islands:} RBCircle with position $\vec{x}$, radius $r=\hat{r}$, mass$=0$ and moment of inertia$=0$.
+\item \textbf{Floating Objects:} RBCircle with position $\vec{x}$, radius $r=\hat{r}$, mass$=r^2$, and moment of inertia $=0$.
 \item \textbf{Boundary:} RBRectangles connecting points of polygon, mass$=0$ and moment of inertia $=0$.
 \end{itemize}
-In the end, these new objects are added to the \texttt{btDiscreteDynamicWorld} and to \texttt{RBCollection}.
+In the end, these new objects are added to the \texttt{btDiscreteDynamicWorld} and to the \texttt{RBCollection}.
 
 
 As one can easily imagine there is a lot of freedom in the exact parameter choice; the values taken here were derived from playing the game and getting a user feedback.
