@@ -1,6 +1,5 @@
 \section{Rigid Body Simulation}
-\tododone[inline]{Benni}{responsible for section \textbf{RB}: Friedrich -- DONE}
-\todourgent[inline]{Benni}{did some proofreading and minor corrections}
+\todourgent[inline]{Friedrich}{Friedrich responsible for \textbf{RB}}
 
 The goal of this project was to develop a game which is based on a real time physics simulation of fluid flow, rigid bodies and their interaction. The main task of the rigid body group was hence the collision detection and collision handling for the different objects as well as developing the interface to the fluid group, which gives us the necessary two-way-interaction of the fluid and the bodies. 
 
@@ -12,6 +11,8 @@ While interaction between simple shapes like circles and rectangles is manageabl
 %\end{itemize}
 
 \subsection{Bullet}
+\tododone[inline]{Friedrich}{RB \textbf{Bullet} done}
+\todointern[inline]{Benni}{did some proofreading and minor corrections}
 As a consequence, our first task in this project was to get Bullet running on multiple layers -- i.e. understanding the library as well as using it in our project. This task, as simple as it might seem at first sight, already included some pitfalls, which we hope to diminish for the next group with the help of this report. 
 \subsubsection{Building}
 To build bullet, one needs \emph{cmake}\cite{CMake}. After having downloaded the Bullet library from the respective webpage, one can follow the instructions below to build it:
@@ -106,18 +107,15 @@ The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member, co
 \end{itemize}
 
 \subsubsection{Discussion}
-\tododone[inline]{Benni}{responsible for \textbf{Discussion} on RB and Bullet: Erik, Friedrich, Benni}
-\begin{itemize}
-\item was a bit of an overkill: in the end we only used circles anyhow.
-\item better way: 
-\begin{itemize}
-\item first simple mock up with basic, easy functionality implemented on our own: explicit euler, circles, no performance optimization...
-\item then wrap physics engine as soon as interfaces are defined and running, whole change under the hood
-\end{itemize}
-\end{itemize}
+\tododone[inline]{Benni}{RB \textbf{Discussion} done}
+\todointern[inline]{Benni}{Erik or Friedrich please proofread}
+Wrapping Bullet enabled us to add a lot of functionality to our game while keeping the necessary work on implementation and testing low. But understanding and wrapping Bullet was still a complex and time consuming task. Therefore it took very long to produce a working mockup for the rigid body part and this also slowed down the process of defining interfaces to the other groups. In the end we have not been able to use the huge capabilities of Bullet whereas theoretically our implementation supports complex shapes like polygons, due to time constraints.
+
+Wrapping Bullet already at the beginning of the project has been a bad decision, because this decision slowed down the process of the whole project and we put a lot of effort into functionality nobody actually uses. A better solution would have been implementing a very simple rigid body engine with basic functionality first\footnote{Very simple means \emph{really} as simple as possible: Only spheres, no rotation, only explicit Euler for time integration, no optimizations etc.} and then improving the functionality as soon as the interfaces are defines -- here wrapping Bullet "under the hood" would have been an option.
 
 \subsection{Interfaces}
-\tododone[inline]{Benni}{responsible for subsection \textbf{Interfaces} of RB: Friedrich -- DONE}
+\tododone[inline]{Friedrich}{\textbf{Interfaces overview} of RB done}
+\todointern[inline]{Benni}{Someone proofreading?}
 As it turned out during the project, the most complex task was to get the interfaces between the groups running. Rigid bodies needed interaction with all of them:
 \begin{itemize}
 \item \textbf{Input devices:} Boat is a rigid body and forces are applied from input devices.
@@ -134,7 +132,7 @@ In the following sections, we want to explain the implementations of the differe
 %\item discrete version(LBM, ImgRecognition) vs. continuous version(Visu, RB Internal) of RBs
 %\end{itemize}
 \subsubsection{to Input Devices}
-\tododone[inline]{Benni}{responsible for interface from RB \textbf{to Input Devices}: Erik?}
+\todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to Input Devices}}
 \begin{itemize}
 \item how to model rowing
 \item apply forces to bodies depending on input
@@ -143,7 +141,8 @@ In the following sections, we want to explain the implementations of the differe
 
 \subsubsection{to Image Recognition}
 \label{sec: interfaceImageRecognition}
-\tododone[inline]{}{responsible for interface from RB \textbf{to Image Recognition}: Friedrich -- \textbf{DONE}}
+\tododone[inline]{Friedrich}{Interface RB \textbf{to Image Recognition} done}
+\todointern[inline]{Benni}{Benni or Erik please proofread}
 The interface to image recognition works with the help of the \texttt{ProcessingManager} class (as also already described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries and rigid and static bodies. The methods of \texttt{ProcessingManager} which we used were:
 \begin{itemize}
 \item \texttt{boatCenters():std::vector<cv::Vec2f>} Returns a 2D vector with the position of the boats.
@@ -182,7 +181,8 @@ As one can easily imagine there is a lot of freedom in the exact parameter choic
 %\end{itemize}
 
 \subsubsection{to Visualization}
-\tododone[inline]{Benni}{responsible for interface from RB \textbf{to Visualization}: Benni \textbf{DONE}}
+\tododone[inline]{Benni}{Interface RB \textbf{to Visualization} done}
+\todointern[inline]{Benni}{Erik or Friedrich please proofread}
 
 For finally visualizing the rigid bodies we have to give access to the shape and the position of the rigid body. Our class \texttt{RBObject} already holds all this information. Therefore it was sufficient to grant -- through the \texttt{RBCollection} -- access to the \texttt{RBObject} objects:
 \begin{itemize}
@@ -191,7 +191,7 @@ For finally visualizing the rigid bodies we have to give access to the shape and
 \end{itemize}
 Representing shapes in an abstract way through the \texttt{RBShape} interface enabled us to completely hide Bullet from the visualization part of the pipeline while representing rigid body shapes in a proper and extensible way\footnote{Polygons could be easily added to our design, by simply adding a child class \texttt{RBPolygon} to the \texttt{RBShape} interface.}. 
 \subsubsection{to LBM}
-\tododone[inline]{Benni}{responsible for interface from RB \textbf{to LBM}: Erik?}
+\todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to LBM}}
 \begin{itemize}
 \item how to send important quantities (discretization of continuous RB into cells, velocity of RB...)
 \item how to receive important quantities (forces and torques from the fluid on the body)
