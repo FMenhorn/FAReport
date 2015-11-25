@@ -97,13 +97,13 @@ We furthermore wrote a class \texttt{RBCollection} which is a container class fo
 \subsubsection*{RBManager}
 \label{sec: rbManager}
 The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member, control over the \texttt{RBCollection} and is hence responsible for the simulation. By calling the class method \texttt{doTimeStep()} one implicitly calls the method \texttt{stepSimulation()} of \texttt{btDiscreteDynamicWorld}. 
-\todointern{Benni}{should this part be moved to the interfaces?} Furthermore, \texttt{RBManager} is responsible for setting up the correct world with the help of the methods by using its  interface to image recognition (see \autoref{sec: interfaceImageRecognition}:
+\todointern{Benni}{should this part be moved to the interfaces?} Furthermore, \texttt{RBManager} is responsible for setting up the correct world with the help of the methods by using its  interface to image processing (see \autoref{sec: interfaceImageProcessing}:
 \begin{itemize}
 \item \texttt{addNewRigidBody():} Adds a new rigid body to \texttt{RBCollection} and \texttt{btDiscreteDynamicWorld}.
-\item \texttt{setUpIslands():} Sets up the islands sent from image recognition.
-\item \texttt{setUpBoundary():} Sets up the boundary sent from image recognition.
-\item \texttt{setUpRigidBodies():} Sets up the floating objects in the domain sent from image recognition.
-\item \texttt{createBoats():} Sets up the boats based on the position given by image recognition.
+\item \texttt{setUpIslands():} Sets up the islands sent from image processing.
+\item \texttt{setUpBoundary():} Sets up the boundary sent from image processing.
+\item \texttt{setUpRigidBodies():} Sets up the floating objects in the domain sent from image processing.
+\item \texttt{createBoats():} Sets up the boats based on the position given by image processing.
 \end{itemize}
 
 \subsubsection{Discussion}
@@ -115,21 +115,21 @@ Wrapping Bullet already at the beginning of the project has been a bad decision,
 
 \subsection{Interfaces}
 \tododone[inline]{Friedrich}{\textbf{Interfaces overview} of RB done}
-\todointern[inline]{Benni}{Someone proofreading?}
-As it turned out during the project, the most complex task was to get the interfaces between the groups running. Rigid bodies needed interaction with all of them:
+\tododone[inline]{Benni}{Someone proofreading? Saumi: Proofreading of intro done. Made minor changes}
+The most complex task in the execution of the project turned out to be getting the interfaces between the groups running. Rigid bodies needed interaction with all of them:
 \begin{itemize}
-\item \textbf{Input devices:} Boat is a rigid body and forces are applied from input devices.
-\item \textbf{Image recognition:} Sends the information on the terrain, which is then implemented as a set of rigid bodies.
+\item \textbf{Input devices:} The boats are rigid bodies and the forces on them are applied through input devices.
+\item \textbf{Image Processing:} Sends information on the terrain, which is then implemented as a set of rigid bodies.
 \item \textbf{Visualization:} Creates the visual output of objects depending on their properties.
 \item \textbf{LBM:} Simulates the fluid-structure interaction between flow and objects.
 \end{itemize}
-If one these interfaces is working, the whole project gets stuck. Hence, the correct implementation of the interfaces was a crucial task.
-Additionally an important goal was to completely hide the complexity of the Bullet library from the other groups and just supply them with the -- for the respective task -- relevant information.
+In order for the project to function, it was imperative that all these interfaces function properly. Hence, the correct implementation of the interfaces was a crucial task.
+In addition, an important goal was to completely hide the complexity of the Bullet library from the other groups and just supply them with the relevant information for their task.
 
 In the following sections, we want to explain the implementations of the different interfaces to the other groups in more detail.
 %\begin{itemize}
 %\item RB have many interfaces! Most complex to LBM, but also many more interfaces with different demands.
-%\item discrete version(LBM, ImgRecognition) vs. continuous version(Visu, RB Internal) of RBs
+%\item discrete version(LBM, ImgProcessing) vs. continuous version(Visu, RB Internal) of RBs
 %\end{itemize}
 \subsubsection{to Input Devices}
 \todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to Input Devices}}
@@ -139,11 +139,11 @@ In the following sections, we want to explain the implementations of the differe
 \item in the end more time for finetuning would have been good!
 \end{itemize}
 
-\subsubsection{to Image Recognition}
-\label{sec: interfaceImageRecognition}
-\tododone[inline]{Friedrich}{Interface RB \textbf{to Image Recognition} done}
-\todointern[inline]{Benni}{Benni or Erik please proofread}
-The interface to image recognition works with the help of the \texttt{ProcessingManager} class (as also already described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries and rigid and static bodies. The methods of \texttt{ProcessingManager} which we used were:
+\subsubsection{to Image Processing}
+\label{sec: interfaceImageProcessing}
+\tododone[inline]{Friedrich}{Interface RB \textbf{to Image Processing} done}
+\todointern[inline]{Benni}{Benni or Erik please proofread. Saumi: Made some minor changes}
+The interface with image processing works with the help of the \texttt{ProcessingManager} class (as also already described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries and rigid and static bodies. The methods of \texttt{ProcessingManager} which we used were:
 \begin{itemize}
 \item \texttt{boatCenters():std::vector<cv::Vec2f>} Returns a 2D vector with the position of the boats.
 \item \texttt{outerBorder():Polygon} Returns a \texttt{Polygon} which holds the structure of the outer border
@@ -159,12 +159,12 @@ of \texttt{RBManager}. The interface is also visualised as an UML diagram in \au
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.5]{img/RigidBodies/InterfaceRBImageRecogniton.png}
-\caption{Interface between rigid bodies and image recognition.}
+\caption{Interface between rigid bodies and image processing.}
 \label{fig: interfaceRBIR}
 \end{figure}
 
 
-For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can now calculate a center of mass. For rigid bodies (static or dynamic) we calculated the mean position of the polygon points as center of mass $\vec{x}$ and also the mean deviation $\hat{r}$ to approximate a radius $r$. By connecting the polygon points one after another with the help of rectangular shaped rigid bodies, we set up the boundary. The mass and shape is assigned depending on the type of the body and its volume (mass=0: static body, mass$>$0: dynamic body). We end up with four different kinds of rigid bodies which we approximated.
+For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can calculate a center of mass. For rigid bodies (static or dynamic) we calculate the mean position of the polygon points as center of mass $\vec{x}$ and also the mean deviation $\hat{r}$ to approximate a radius $r$. By connecting the polygon points one after another with the help of rectangular shaped rigid bodies, we set up the boundary. The mass and shape are assigned depending on the type of the body and its volume (mass=0: static body, mass$>$0: dynamic body). We end up with four different kinds of rigid bodies which we approximate as follows:
 \begin{itemize}
 \item \textbf{Boats:} RBCircle with position $\vec{x}$, radius $r=20$, mass$=0.6e4$ and moment of inertia$=1.2e7$.
 \item \textbf{Islands:} RBCircle with position $\vec{x}$, radius $r=\hat{r}$, mass$=0$ and moment of inertia$=0$.
