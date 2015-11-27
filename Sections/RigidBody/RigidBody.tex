@@ -131,7 +131,7 @@ In the following sections, we want to explain the implementations of the differe
 %\item RB have many interfaces! Most complex to LBM, but also many more interfaces with different demands.
 %\item discrete version(LBM, ImgProcessing) vs. continuous version(Visu, RB Internal) of RBs
 %\end{itemize}
-\subsubsection{to Input Devices}
+\subsubsection{Interface to Input Devices}
 \todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to Input Devices}}
 \begin{itemize}
 \item how to model rowing
@@ -139,7 +139,7 @@ In the following sections, we want to explain the implementations of the differe
 \item in the end more time for finetuning would have been good!
 \end{itemize}
 
-\subsubsection{to Image Processing}
+\subsubsection{Interface to Image Processing}
 \label{sec: interfaceImageProcessing}
 \tododone[inline]{Friedrich}{Interface RB \textbf{to Image Processing} done}
 \todointern[inline]{Benni}{Benni or Erik please proofread. Saumi: Made some minor changes}
@@ -179,8 +179,15 @@ As one can easily imagine there is a lot of freedom in the exact parameter choic
 %\item how to model boundaries
 %\item how to create different rigid bodies
 %\end{itemize}
+\subsubsection{Interface to LBM}
+\todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to LBM}}
 
-\subsubsection{to Visualization}
+\begin{itemize}
+\item how to send important quantities (discretization of continuous RB into cells, velocity of RB...)
+\item how to receive important quantities (forces and torques from the fluid on the body)
+\end{itemize}
+
+\subsubsection{Interface to Visualization}
 \tododone[inline]{Benni}{Interface RB \textbf{to Visualization} done}
 \todointern[inline]{Benni}{Erik or Friedrich please proofread}
 
@@ -190,9 +197,3 @@ For finally visualizing the rigid bodies we have to give access to the shape and
 \item \texttt{getRBShape()} returns the \texttt{RBShape} of the body, which is either a \texttt{RBCircle} with its radius or a \texttt{RBRectangle} with the length of its two sides.
 \end{itemize}
 Representing shapes in an abstract way through the \texttt{RBShape} interface enabled us to completely hide Bullet from the visualization part of the pipeline while representing rigid body shapes in a proper and extensible way\footnote{Polygons could be easily added to our design, by simply adding a child class \texttt{RBPolygon} to the \texttt{RBShape} interface.}. 
-\subsubsection{to LBM}
-\todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to LBM}}
-\begin{itemize}
-\item how to send important quantities (discretization of continuous RB into cells, velocity of RB...)
-\item how to receive important quantities (forces and torques from the fluid on the body)
-\end{itemize}
