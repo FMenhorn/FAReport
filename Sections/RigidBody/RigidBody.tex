@@ -1,26 +1,17 @@
 \section{Rigid Body Simulation}
-\todourgent[inline]{Friedrich}{Friedrich responsible for \textbf{RB}}
+The goal of this project was to develop a game which is based on a real time physics simulation for fluid-structure interaction. The main task of the rigid body group was hence the collision detection and collision handling for the different objects as well as developing the interface to the fluid group, which gives us the necessary two-way-interaction of the fluid and the bodies. 
 
-The goal of this project was to develop a game which is based on a real time physics simulation of fluid flow, rigid bodies and their interaction. The main task of the rigid body group was hence the collision detection and collision handling for the different objects as well as developing the interface to the fluid group, which gives us the necessary two-way-interaction of the fluid and the bodies. 
-
-While interaction between simple shapes like circles and rectangles is manageable, it becomes more complex for polygons. Therefore, whereas the fluid group implemented their own LBM solver, we decided to adapt the real-time physics library \emph{Bullet} \cite{Bullet} for the rigid body handling. By doing this, we did not have to invent the wheel anew. Furthermore, Bullet gives a lot of possibilities for extensions to the program offering a variety of different complex shapes for example. Hence, the first approach was to implement Bullet using simple shapes, such as circles and rectangles and then move on to more complex polygons.
-%\begin{itemize}
-%\item simulation driven game one half LBM, one half RB
-%\item RB simulation is very simple for circles, becomes more complicated for rectangles and gets a real problem for polygons and other complex stuff. Our strategy: Wrap a fully developed RB engine and use its functionality
-%\item the main problem is not the implementation of the functionality, but the interfaces!
-%\end{itemize}
+While the collision between simple shapes like circles and rectangles is manageable, it becomes more complex for polygons. Therefore, whereas the fluid group implemented their own LBM solver, we decided to adapt the real-time physics library \emph{Bullet} \cite{Bullet} for the rigid body handling. By doing this, we did not have to invent the wheel anew. Furthermore, Bullet gives a lot of possibilities for extensions to the program-- offering a variety of different complex shapes for example. Hence, the first approach was to implement Bullet using simple shapes, such as circles and rectangles and then move on to more complex polygons.
 
 \subsection{Bullet}
-\tododone[inline]{Friedrich}{RB \textbf{Bullet} done}
-\todointern[inline]{Benni}{did some proofreading and minor corrections}
-As a consequence, our first task in this project was to get Bullet running on multiple layers -- i.e. understanding the library as well as using it in our project. This task, as simple as it might seem at first sight, already included some pitfalls, which we hope to diminish for the next group with the help of this report. 
+As a prerequisite, our first task in this project was to get Bullet running on multiple layers-- i.e. understanding the library as well as using it in our project. This task, as simple as it might seem at first sight, already included some pitfalls, which we hope to diminish for the next group with the help of this report. 
 \subsubsection{Building}
-To build bullet, one needs \emph{cmake}\cite{CMake}. After having downloaded the Bullet library from the respective webpage, one can follow the instructions below to build it:
+To build Bullet, one needs \emph{cmake} \cite{CMake}. After having downloaded the project repository \verb+fa+, one can follow the instructions below to build Bullet:
 \begin{enumerate}
-\item Extract the \verb+fa/sources-for-rigidbody/bullet3-2.83.6.tar.gz +
-\item run \verb+cmake . + in the top directory.
+\item Extract the \verb+fa/sources-for-rigidbody/bullet3-2.83.6.tar.gz+
+\item run \verb+cmake .+ in the top directory.
 \item run \verb+make -j4+ (\verb+-j4+ chooses 4 threads for compilation) in the top directory.
-\item run \verb+sudo make install + in the \verb+src+ directory.
+\item run \verb+sudo make install+ in the \verb+src+ directory.
 \end{enumerate}
 Afterwards, one has to link to the library in the compilation (usually \verb+/usr/local/include/bullet+ and \verb+-L/usr/local/lib+)
 \subsubsection{Functionality we used}
@@ -35,8 +26,8 @@ We had three basic classes from Bullet which we used. The first was \verb+btDisc
 
 With that, we directly come to Bullet's rigid body class: \verb+btRigidBody+, see \autoref{fig: btRBgraph}. The library offers three kinds of rigid bodies types:
 \begin{enumerate}
-\item \textbf{Dynamic rigid bodies}, with positive mass. Motion is controlled by rigid body dynamics.
-\item \textbf{Fixed objects} with zero mass. They are not moving (basically collision objects).
+\item \textbf{Dynamic rigid bodies} with positive mass. Motion is controlled by rigid body dynamics.
+\item \textbf{Fixed objects} with zero mass. They are not moving.
 \item \textbf{Kinematic objects}, which are objects without mass, but the user can move them.
 \end{enumerate}
 We used objects of type 1. and 2., which we controlled by assigning them the corresponding mass. Hence, we could build dynamic (floating obstacles) and static objects (walls, boundaries) in our simulation. Furthermore, the \texttt{btRigidBody} class offers methods to access the properties of the objects such as 
@@ -54,7 +45,8 @@ to name a few.
 \label{fig: btRBgraph}
 \end{figure}
 
-Finally, Bullet also offers the possibility to assign a shape to a \texttt{btRigidBody} object. Here, a shape object can be rather seen as a pattern than an actual object, since multiple rigid bodies can share the same shape object. The class in Bullet is called \texttt{btCollisionShape}. See \autoref{fig: btCSgraph} in the appendix, for an inheritance diagram which shows the amount of different shapes this family of classes provides. From convex shapes over concave shapes to compound shapes which one can freely design. The two shapes that we use are \texttt{btCylinderShape} and \texttt{btBoxShape}, see \autoref{fig: btCylSgraph} and \autoref{fig: btBoxSgraph}. By assigning a height of 1 to the cylinder we received a circle shape; the box shape was used for rectangles and squares. The idea was to later move on to more complex polygons, of course.
+
+Finally, Bullet also offers the possibility to assign a shape to a \texttt{btRigidBody} object. Here, a shape object can be rather seen as a pattern than an actual object, since multiple rigid bodies can share the same shape object. The class in Bullet is called \texttt{btCollisionShape}. See \autoref{fig: btCSgraph} in the appendix, for an inheritance diagram which shows the amount of different shapes this family of classes provides. From convex shapes over concave shapes to compound shapes which one can freely design. The two shapes that we use are \texttt{btCylinderShape} and \texttt{btBoxShape}, see \autoref{fig: btCylSgraph} and \autoref{fig: btBoxSgraph}. By assigning a height of 1 to the cylinder we receive a circle shape; the box shape is used for rectangles and squares. The idea is to later move on to more complex polygons, of course.
 \begin{figure}[ht]
 \centering
 \begin{minipage}{.45\linewidth}
@@ -73,7 +65,7 @@ Finally, Bullet also offers the possibility to assign a shape to a \texttt{btRig
 \end{figure}
 
 \subsubsection{Implementation}
-In this section we want to take a look at our actual implementation. For that, the general structure is depicted with the help of an UML diagram, see \autoref{fig: RBUMLgraph}. Although the diagram shows a few of the most important methods, its focus lies more on the connection between the classes and the general structure. In the following, we want to give a simple introduction to the individual classes. All of them are also documented with the help of \emph{Doxygen} \cite{Doxygen}. Hence, to get more detailed information about the properties, members and methods of each class, create the Doxygen documentation by calling \texttt{doxygen Doxyfile} in the topmost folder of the source code. The main page of the documentation can then be found in \texttt{/html/index.html}.
+In this section we take a look at our actual implementation. For that, the general structure is depicted with the help of an UML diagram, see \autoref{fig: RBUMLgraph}. Although the diagram shows a few of the most important methods, it focusses more on the connection between the classes and the general structure. In the following, we want to give a simple introduction to the individual classes. All of them are also documented with the help of \emph{Doxygen} \cite{Doxygen}. Hence, to get more detailed information about the properties, members and methods of each class, create the Doxygen documentation by calling \texttt{doxygen Doxyfile} in the top most folder of the source code. The main page of the documentation can then be found in \texttt{/html/index.html}.
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.42]{img/RigidBodies/RigidBodyUML.png}
@@ -82,7 +74,7 @@ In this section we want to take a look at our actual implementation. For that, t
 \end{figure}
 
 \subsubsection*{RBObject and RBShape}
-To wrap Bullet, we developed our own classes which we named \texttt{RBObject} and \texttt{RBShape}, which wrap \texttt{btRigidBody} and \texttt{btCollisionShape} respectively. The two specific shapes, we implemented by now are \texttt{RBCircle} and \texttt{RBRectangle}, see \autoref{fig: RBShape} for the specific inheritance diagram. \todointern{Benni}{should this be moved to the respective interfaces?}
+To wrap Bullet, we developed our own classes which we named \texttt{RBObject} and \texttt{RBShape}; they wrap \texttt{btRigidBody} and \texttt{btCollisionShape} respectively. The two specific shapes we implemented by now are \texttt{RBCircle} and \texttt{RBRectangle}, see \autoref{fig: RBShape} for the specific inheritance diagram. \todointern{Benni}{should this be moved to the respective interfaces?} 
 \texttt{RBObject} on the other hand includes all the methods from Bullet which we need to transfer information for the LBM simulation and the visualization, like \texttt{getLinearVelocity()} and \texttt{getCenterOfMass()} as mentioned above. 
 \begin{figure}[ht]
 \centering
@@ -92,18 +84,20 @@ To wrap Bullet, we developed our own classes which we named \texttt{RBObject} an
 \end{figure}
 
 \subsubsection*{RBCollection}
-We furthermore wrote a class \texttt{RBCollection} which is a container class for all generated \texttt{RBObjects}. \texttt{RBCollection} is also responsible for the communication to LBM and visualization, since it is a derived class from \texttt{CPipelinePacket}. With methods like \texttt{getLBMOBjectWrapperBegin()} or \texttt{getPayloadRaw()} it gives access to different pieces of information transferred between the stages. 
+<<<<<<< HEAD
+\texttt{RBCollection} is a container class for all generated \texttt{RBObjects}. is also responsible for the communication to LBM and visualization, since it is a derived class from \texttt{CPipelinePacket}. With methods like \texttt{getLBMOBjectWrapperBegin()} or \texttt{getPayloadRaw()} it gives access to different pieces of information transferred between the stages. 
 
 \subsubsection*{RBManager}
 \label{sec: rbManager}
 The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member, control over the \texttt{RBCollection} and is hence responsible for the simulation. By calling the class method \texttt{doTimeStep()} one implicitly calls the method \texttt{stepSimulation()} of \texttt{btDiscreteDynamicWorld}. 
-\todointern{Benni}{should this part be moved to the interfaces?} Furthermore, \texttt{RBManager} is responsible for setting up the correct world with the help of the methods by using its  interface to image recognition (see \autoref{sec: interfaceImageRecognition}:
+\todointern{Benni}{should this part be moved to the interfaces?}
+Furthermore, \texttt{RBManager} is responsible for setting up the correct world with the help of the methods by using its interface to image recognition (see \autoref{sec: interfaceImageRecognition}):
 \begin{itemize}
 \item \texttt{addNewRigidBody():} Adds a new rigid body to \texttt{RBCollection} and \texttt{btDiscreteDynamicWorld}.
-\item \texttt{setUpIslands():} Sets up the islands sent from image recognition.
-\item \texttt{setUpBoundary():} Sets up the boundary sent from image recognition.
-\item \texttt{setUpRigidBodies():} Sets up the floating objects in the domain sent from image recognition.
-\item \texttt{createBoats():} Sets up the boats based on the position given by image recognition.
+\item \texttt{setUpIslands():} Sets up the islands sent from image processing.
+\item \texttt{setUpBoundary():} Sets up the boundary sent from image processing.
+\item \texttt{setUpRigidBodies():} Sets up the floating objects in the domain sent from image processing.
+\item \texttt{createBoats():} Sets up the boats based on the position given by image processing.
 \end{itemize}
 
 \subsubsection{Discussion}
@@ -115,35 +109,42 @@ Wrapping Bullet already at the beginning of the project has been a bad decision,
 
 \subsection{Interfaces}
 \tododone[inline]{Friedrich}{\textbf{Interfaces overview} of RB done}
-\todointern[inline]{Benni}{Someone proofreading?}
-As it turned out during the project, the most complex task was to get the interfaces between the groups running. Rigid bodies needed interaction with all of them:
+\tododone[inline]{Benni}{Someone proofreading? Saumi: Proofreading of intro done. Made minor changes}
+The most complex task in the execution of the project turned out to be getting the interfaces between the groups running. Rigid bodies needed interaction with all of them:
 \begin{itemize}
-\item \textbf{Input devices:} Boat is a rigid body and forces are applied from input devices.
-\item \textbf{Image recognition:} Sends the information on the terrain, which is then implemented as a set of rigid bodies.
+\item \textbf{Input devices:} The boats are rigid bodies and the forces on them are applied through input devices.
+\item \textbf{Image Processing:} Sends information on the terrain, which is then implemented as a set of rigid bodies.
 \item \textbf{Visualization:} Creates the visual output of objects depending on their properties.
 \item \textbf{LBM:} Simulates the fluid-structure interaction between flow and objects.
 \end{itemize}
-If one these interfaces is working, the whole project gets stuck. Hence, the correct implementation of the interfaces was a crucial task.
-Additionally an important goal was to completely hide the complexity of the Bullet library from the other groups and just supply them with the -- for the respective task -- relevant information.
+In order for the project to function, it was imperative that all these interfaces function properly. Hence, the correct implementation of the interfaces was a crucial task.
+In addition, an important goal was to completely hide the complexity of the Bullet library from the other groups and just supply them with the relevant information for their task.
 
 In the following sections, we want to explain the implementations of the different interfaces to the other groups in more detail.
 %\begin{itemize}
 %\item RB have many interfaces! Most complex to LBM, but also many more interfaces with different demands.
-%\item discrete version(LBM, ImgRecognition) vs. continuous version(Visu, RB Internal) of RBs
+%\item discrete version(LBM, ImgProcessing) vs. continuous version(Visu, RB Internal) of RBs
 %\end{itemize}
-\subsubsection{to Input Devices}
-\todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to Input Devices}}
-\begin{itemize}
-\item how to model rowing
-\item apply forces to bodies depending on input
-\item in the end more time for finetuning would have been good!
-\end{itemize}
 
-\subsubsection{to Image Recognition}
-\label{sec: interfaceImageRecognition}
-\tododone[inline]{Friedrich}{Interface RB \textbf{to Image Recognition} done}
-\todointern[inline]{Benni}{Benni or Erik please proofread}
-The interface to image recognition works with the help of the \texttt{ProcessingManager} class (as also already described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries and rigid and static bodies. The methods of \texttt{ProcessingManager} which we used were:
+\subsubsection{Interface to Input Devices}
+\tododone[inline]{Benni}{Erik responsible for interface from RB \textbf{to Input Devices}}
+\todointern{Erik}{More needed?}
+As information exchange with the input devices only needed to go one way, the common interface between the Input Devices classes and the Rigid Bodies classes is a relatively simple one. Here, we again used a subclass of \texttt{CPipelinePacket}, namely \texttt{PlayerArray}, containing one or several \texttt{struct PlayerData} with information for each player ridid body, such as applied force and torque. This was then applied in the Bullet engine. 
+
+However, to make a game exciting, the force needed to be scaled somewhat -- to make it not too easy but also noot too hard to control the boats down the coarse. This was done on the Rigid Body side of he interface, and required quite a lot of fine-tuning. 
+
+%
+%\begin{itemize}
+%\item how to model rowing
+%\item apply forces to bodies depending on input
+%\item in the end more time for finetuning would have been good!
+%\end{itemize}
+
+\subsubsection{Interface to Image Processing}
+\label{sec: interfaceImageProcessing}
+\tododone[inline]{Friedrich}{Interface RB \textbf{to Image Processing} done}
+\todointern[inline]{Benni}{Benni or Erik please proofread. Saumi: Made some minor changes. Erik: Note that this section is using present tense, as opposed to surrounding interface sections!}
+The interface with image processing works with the help of the \texttt{ProcessingManager} class (as also already described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries and rigid and static bodies. The methods of \texttt{ProcessingManager} which we used were:
 \begin{itemize}
 \item \texttt{boatCenters():std::vector<cv::Vec2f>} Returns a 2D vector with the position of the boats.
 \item \texttt{outerBorder():Polygon} Returns a \texttt{Polygon} which holds the structure of the outer border
@@ -159,17 +160,18 @@ of \texttt{RBManager}. The interface is also visualised as an UML diagram in \au
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.5]{img/RigidBodies/InterfaceRBImageRecogniton.png}
-\caption{Interface between rigid bodies and image recognition.}
+\caption{Interface between rigid bodies and image processing.}
 \label{fig: interfaceRBIR}
 \end{figure}
 
 
-For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can now calculate a center of mass. For rigid bodies (static or dynamic) we calculated the mean position of the polygon points as center of mass $\vec{x}$ and also the mean deviation $\hat{r}$ to approximate a radius $r$. By connecting the polygon points one after another with the help of rectangular shaped rigid bodies, we set up the boundary. The mass and shape is assigned depending on the type of the body and its volume (mass=0: static body, mass$>$0: dynamic body). We end up with four different kinds of rigid bodies which we approximated.
+<<<<<<< HEAD
+For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can calculate a center of mass. For rigid bodies (static or dynamic) we calculated the mean position of the polygon points as center of mass $\vec{x}$ and also the mean deviation $\hat{r}$ to approximate a radius $r$. To set up the boundary, we connect the polygon points one after another with the help of rectangular shaped rigid bodies. The mass and shape is assigned depending on the type of the body and its volume (mass=0: static body, mass$>$0: dynamic body). We end up with four different kinds of rigid bodies which we approximated as follows:
 \begin{itemize}
-\item \textbf{Boats:} RBCircle with position $\vec{x}$, radius $r=20$, mass$=0.6e4$ and moment of inertia$=1.2e7$.
-\item \textbf{Islands:} RBCircle with position $\vec{x}$, radius $r=\hat{r}$, mass$=0$ and moment of inertia$=0$.
-\item \textbf{Floating Objects:} RBCircle with position $\vec{x}$, radius $r=\hat{r}$, mass$=r^2$, and moment of inertia $=0$.
-\item \textbf{Boundary:} RBRectangles connecting points of polygon, mass$=0$ and moment of inertia $=0$.
+\item \textbf{Boats:} \texttt{RBCircle} with position $\vec{x}$, radius $r=20$, mass$=0.6e4$ and moment of inertia$=1.2e7$.
+\item \textbf{Islands:} \texttt{RBCircle} with position $\vec{x}$, radius $r=\hat{r}$, mass$=0$ and moment of inertia$=0$.
+\item \textbf{Floating Objects:} \texttt{RBCircle} with position $\vec{x}$, radius $r=\hat{r}$, mass$=r^2$, and moment of inertia $=0$.
+\item \textbf{Boundary:} Multiple \texttt{RBRectangle} connecting points of polygon, mass$=0$ and moment of inertia $=0$.
 \end{itemize}
 In the end, these new objects are added to the \texttt{btDiscreteDynamicWorld} and to the \texttt{RBCollection}.
 
@@ -180,7 +182,31 @@ As one can easily imagine there is a lot of freedom in the exact parameter choic
 %\item how to create different rigid bodies
 %\end{itemize}
 
-\subsubsection{to Visualization}
+\subsubsection{Interface to LBM}
+\tododone[inline]{Benni}{Erik responsible for interface from RB \textbf{to LBM}}
+\todointern[inline]{Erik}{Again, if someone feels like proofreading - but it's not very much.}
+In order to get realistic interaction between the fluid field and the (among themselves interacting) rigid bodies, we decided to create an interface class \texttt{LBMRigidBodyObject}, in order to decouple the two parts of the program. The class was decided to:
+\begin{itemize}
+\item Wrap parts of the Rigid Body and Bullet functionality needed for the LBM simulation, such as calculating velocity on the outside of an object, or if a position was inside or outside the object. This would let the functionality be used int the LBM simulation without it having to implement Bullet, while also also isolating it from internal changes in the Rigid Body code.
+\item Similarly, allow the LBM simulation to provide a force and torque from the fluid simulation on the rigid bodies for realistic interaction.
+\item Also process some of the Rigid Body data to be used directly in the LBM simulation, such as delivering a list of LBM cells which were newly covered by the rigid body in the previous timestep. This was decided as the LBM simulation team was significantly smaller than the Rigid Body team, in order to balance the workload on the two groups.
+\end{itemize}
+In hindsight, this last point might not have been the most clever approach, as this processing was not yet in place when the LBM team wanted it, and since the raw data was not going to be needed if the processed data was there, the raw data was not provided by the interface In order to get their functionality, the LBM simulation then implemented Rigid Body-internal functionality, which caused several problem-causing dependencies that were painful to remove. A better approach might have been providing all possible needed raw functionality first, to allow the implementation at various points while still decoupling the two parts of the program. However, as all possible needs cannot always be foreseen when writing an interface, this approach might also not have been possible.
+
+A summarizing UML diagram of the final interfacing can be found in \autoref{fig:LBMRigUML}.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{img/RigidBodies/RigidBodyLBM.png}
+	\caption{Condensed UML diagram around the interface class \texttt{LBMRigidBodyObject}, which wraps and encapsulates functionality of Rigid Body and LBM classes.}
+	\label{fig:LBMRigUML}
+\end{figure}
+%
+%\begin{itemize}
+%\item how to send important quantities (discretization of continuous RB into cells, velocity of RB...)
+%\item how to receive important quantities (forces and torques from the fluid on the body)
+%\end{itemize}
+
+\subsubsection{Interface to Visualization}
 \tododone[inline]{Benni}{Interface RB \textbf{to Visualization} done}
 \todointern[inline]{Benni}{Erik or Friedrich please proofread}
 
@@ -190,9 +216,3 @@ For finally visualizing the rigid bodies we have to give access to the shape and
 \item \texttt{getRBShape()} returns the \texttt{RBShape} of the body, which is either a \texttt{RBCircle} with its radius or a \texttt{RBRectangle} with the length of its two sides.
 \end{itemize}
 Representing shapes in an abstract way through the \texttt{RBShape} interface enabled us to completely hide Bullet from the visualization part of the pipeline while representing rigid body shapes in a proper and extensible way\footnote{Polygons could be easily added to our design, by simply adding a child class \texttt{RBPolygon} to the \texttt{RBShape} interface.}. 
-\subsubsection{to LBM}
-\todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to LBM}}
-\begin{itemize}
-\item how to send important quantities (discretization of continuous RB into cells, velocity of RB...)
-\item how to receive important quantities (forces and torques from the fluid on the body)
-\end{itemize}
