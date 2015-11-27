@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[11pt,a4paper]{scrartcl}
 
 %% Preamble
 \usepackage[utf8]{inputenc}
@@ -10,9 +10,6 @@
 \usepackage{multicol}
 \usepackage{hyperref}
 \usepackage{graphicx}
-\usepackage{subfig}
-\usepackage{xcolor,listings}
-
 \usepackage[colorinlistoftodos]{todonotes}
 
 % For our todos we use the following colorcode:
@@ -28,12 +25,12 @@
 \newcommand{\tododone}[3][noinline]{\todo[#1, author = #2, color=green!40]{\textit{#3}}}
 \newcommand{\todointern}[3][noinline]{\todo[#1, author = #2, color=blue!40]{#3}}
 \newcommand{\todourgent}[3][noinline]{\todo[#1, author = #2, color=red!40]{\textbf{#3}}}
-\newcommand\todoindone[4][]{\todo[inline, author = #2, caption={#3}, #1, color=green!40]{
-\begin{minipage}{\textwidth-4pt}\underline{#3}\\ \textit{#4}\end{minipage}}}
-\newcommand\todoinintern[4][]{\todo[inline, author = #2, caption={#3}, #1, color=blue!40]{
-\begin{minipage}{\textwidth-4pt}\underline{#3}\\  #4\end{minipage}}}
-\newcommand\todoinurgent[4][]{\todo[inline, author = #2, caption={#3}, #1, color=red!40]{
-\begin{minipage}{\textwidth-4pt}\underline{#3}\\ \textbf{#4}\end{minipage}}}
+\newcommand{\todoindone}[3]{\todo[inline, caption={#2}, color=green!40]{
+\begin{minipage}{\textwidth-4pt}\underline{#2}\\ \textit{#3}\end{minipage}}}
+\newcommand{\todoinintern}[3]{\todo[inline, caption={#2} color=blue!40]{
+\begin{minipage}{\textwidth-4pt}\underline{#2}\\  #3\end{minipage}}}
+\newcommand{\todoinurgent}[4][]{\todo[inline caption={#2}, color=red!40]{
+\begin{minipage}{\textwidth-4pt}\underline{#2}\\ \textbf{#3}\end{minipage}}}
 
 \lstset{%
   showstringspaces=false,
@@ -48,6 +45,7 @@
   showstringspaces=false}
 
 \renewcommand{\arraystretch}{1.5}
+\renewcommand{\texttt}{\lstinline}
 
 \begin{document}
 
@@ -56,9 +54,10 @@
 % TITLE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Title-Needed: A framework for interactive computational fluid simulation and
+\title{Grand Theft Boat}
+\subtitle{A framework for interactive computational fluid simulation and
 visualization}
-\author{Christie Alappat, Saumitra Joshi, Mohamed Khalil, Friedrich Menhorn,\\ Benjamin Rüth, Erik Wannerberg}
+\author{Christie Alappat, Saumitra Joshi, Mohamed Khalil, \\ Friedrich Menhorn, Benjamin Rüth, Erik Wannerberg}
 
 \maketitle
 

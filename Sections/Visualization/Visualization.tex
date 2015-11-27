@@ -1,4 +1,47 @@
 \section{Visualization}
-\tododone[inline]{Benni}{responsible for section \textbf{Visualization}: Benni?}
-\todoinintern{Benni}{Content!}{
-No funny stuff in here, only nice pictures}
+\tododone[inline]{Benni}{for section \textbf{Visualization} done}
+\todointern[inline]{Benni}{Someone proofreading?}
+Finally we want to visualize the different parts of our game. The two main parts of our game, that will be visualized are 
+\begin{itemize}
+\item fluid and
+\item rigid bodies.
+\end{itemize}
+Additionally we also have to visualize miscellaneous content like text or pictures. For the visualization we are using \emph{OpenGL}\cite{OpenGL}.
+
+\subsection{OpenGL}
+OpenGL is a standard which allows the user to utilize the graphics processing unit (GPU) and therefore enables hardware accelerated rendering of 2D and 3D content. OpenGL is used in a wide range of applications from CAD over video games to scientific visualization. It is a very powerful tool and for a summary on the functionality we refer the reader to the documentation of OpenGL. 
+
+\subsection{Implementation and interfaces}
+For our game we only used the 2D rendering functionality of OpenGL. In the following we are going to describe the three different classes of content we had to visualize and stress the communication with the other parts of the pipeline. 
+
+\subsubsection{General layout}
+The whole process of visualization takes place in pipeline stage \texttt{cStage_VideoOutput}. This stage first has to be initialized, which involves connecting the output of \texttt{cStage_Rigid_Body} and the \texttt{cStage_FluidSimulationLBM} to it, for constantly retrieving updates of the simulation from these stages. Also the flag field is once upon initialization.
+
+Then, in the main loop of our program, we constantly call \texttt{CStage_VideoOutput::main_loop_callback()}, which has the following responsibilities:
+\begin{itemize}
+\item Updating the camera view depending on the position of the players. Therefore we call the function \texttt{CStage_VideoOutput::follow_focus()} which controls the camera. The camera has an orthographic view from the top onto the players.
+\item Rendering the content, which is realized using the functions \texttt{CStage_VideoOutput::draw_scene()} and \texttt{CStage_VideoOutput::draw_text()}.
+\end{itemize}
+The function \texttt{CStage_VideoOutput::draw_scene()} is responsible for rendering the simulation with fluid, rigid bodies and some additional content, while \texttt{CStage_VideoOutput::draw_text()} displays information, depending on the state of our game.
+
+We obtain information from the other pipeline stages through \texttt{CStage_VideoOutput::pipeline_process_input}. This function is called always, when another stage pushes information to the visualization stage and updates the internal information on the the flow field, the rigid bodies and other parts of the program.
+
+\subsubsection{Fluid}
+The basic idea for visualizing the fluid uses the \emph{line integral convolution}(LIC) method, which is an algorithm from scientific visualization. Here we just use a input texture and shift it corresponding to the flow field, which we get from the fluid simulation. Since the input texture gets strongly blurred very fast we subsequently overlay the original texture for conserving the original texture.
+Additionaly we also visualize the flow field using a vector field with \texttt{CStage_VideoOutput::draw_arrow_field()}. This is very useful for debugging of the fluid simulation.
+
+\subsubsection{Rigid bodies}
+For the visualization of the rigid bodies, we get the relevant information from the different \texttt{RBObject} objects, which are saved in \texttt{output_RBCollection}, a vector of pointers to the rigid bodies, that is constantly updated by \texttt{CStage_VideoOutput::pipeline_process_input}. From the rigid bodies we can obtain position and shape of the bodies and render them using OpenGL. Depending on the \texttt{ObjectID} of the rigid body, we add the corresponding texture:
+\begin{itemize}
+\item \texttt{PLAYER*} or \texttt{BOAT}: a boat texture
+\item \texttt{ISLAND} or \texttt{BOUNDARY} are not drawn, since they are static objects
+\item \texttt{COLLISIONOBJECT}: a texture of a barrel
+\end{itemize}
+
+\subsubsection{Miscellaneous content}
+All the content which is not part of the simulation, but also needs to be visualized is going to be summarized here.
+\begin{itemize}
+\item Information about the \texttt{gameState}, like displaying the welcome screen or a massage, if one of the players has won, is displayed via simple text massages on the screen. This is done by retrieving the information about the state from the game logic inside the function \texttt{CStage_VideoOutput::draw_text()}.
+\item The finish line, which has to be crossed for winning the game, has to be rendered as well. The function \texttt{CStage_VideoOutput::draw_finish_line()} is responsible for that functionality. 
+\item We also added some debugging features, which can be activated using the keyboard. This input is recognized in \texttt{CStage_VideoOutput::sdl_handle_key_down()}. The camera can be controlled over the keyboard as well.
+\end{itemize}

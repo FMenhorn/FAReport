@@ -1,6 +1,6 @@
 \subsection{Pre-Processing}
 
-Many times, the image supplied by the player may need to be pre-processed for improving boundaries between terrain types. Once given as input to the \verb|ProcessingManager|, the input image undergoes the following sequence of filters:
+Many a time, the image supplied by the player may need to be pre-processed for improving boundaries between terrain types. Once given as input to the \verb|ProcessingManager|, the input image undergoes the following sequence of filters:
 
 \begin{enumerate}
 	\item \textit{Flip image}: 
@@ -21,6 +21,6 @@ Many times, the image supplied by the player may need to be pre-processed for im
 
 	\verb|thresholded = applyThresholding(opened);|
 	
-	Thresholding applies yes-no filters on the image based on the colors of different domain types.
+	Thresholding applies yes-no filters on the image based on the colors of different domain types. This provides the \verb|ProcessingManager| with a boolean (black-white) image for each domain type, which is then used to extract domain information.
 
 \end{enumerate}

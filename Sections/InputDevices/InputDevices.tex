@@ -1,9 +1,42 @@
 \section{Input Devices}
-\tododone[inline]{Benni}{responsible for section \textbf{Input Devices}: Erik?}
-In order to install the sources for Kinect \& Wii integration, take a look at the folders \emph{sources-for-kinect} and \emph{sources-for-wii}. Please read the corresponding README files inside and do what it says.
+\tododone[inline]{Benni}{Erik responsible for section \textbf{Input Devices}}
+\todointern[inline]{Erik}{If someone proofreads it'd be nice, I might ask Steffen}.
 
+To be able to control our game interactively, we need to have some means of providing input during runtime, and this is where the Input Devices come into play. Two different kinds of devices were used in the final game; to control the boats, paddling gestures were interpreted by a Microsoft Kinect\footnote{For those who do not know, the \emph{Kinect} is a motion-tracking device developed by Microsoft initially for their gaming console Xbox 360, which can track bodies by analysing a depth field of the view in front of it, provided by an IR camera. For a more in-depth description, see for example \url{http://www.i-programmer.info/babbages-bag/2003-kinect-the-technology-.html}.}, and keyboard inputs were used to for example quit the program or change the views for debugging purposes. Additionally, a mode without the kinect was available, which allowed two players to control the boats with the keyboard. In this section, we will closer at how we used them and how to interface with such devices, and breifly mention how it can work for a Nintendo Wii controller (\emph{Wiimote}), which was considered for usage but rejected during the project.
+
+\subsection{Usage}
+The usage of the Kinect in the game is (at least in theory) very simple.
 \begin{itemize}
-\item we only used kinect
-\item shortly describe kinect input gestures and necessary steps to get the rowing movement detected and correctly resolved
-\item what do we do with the input? Forward it to rigid bodies!
+\item To use the Kinect, one needs to provide the command line argument \texttt{-dKinect} to select the Kinect as the steering device.
+\item After the game has started, the Kinect software has to recognize a person to start tracking it. To be recognized, one places oneself in front of the Kinect (optimal distance 2.5m) and holds the \emph{Calibration Pose}, which in our case is standing straight with the arms upwards in a "U"-shape, such that the whole body forms the greek letter capital \emph{Psi} $\Psi$.
+\item After one person has done so, a message on the screen tells the user that "\emph{Player 1 recognized}". However, since our game requires two people, the same procedure has to be repeated for a second person, who will be "Player 2" in the game.
+\item After both people have been recognized, the picture changes to one where the two boats are visible, and the game starts.
+\item The players then try to paddle their way from the start (typically on the left side of the level) to the goal (typically on the right) and to get there before the other player.
+\item And how does this paddling work? The player makes motions similar to that while paddling in a canoe: with both hands, one above the other, move an invisible paddle from the front to the back, again and again, to one side of the body. This creates a forward force with each paddle stroke. 
+\item Of course, one also has to steer: depending on which side of the body the player strokes, the force also starts turning the boat either left or right; a stroke on the left side of the body makes the boat rotate clockwise, turning the boat to the right, and vice versa for turning in the other direction.
+\item Just like in reality, the further out one strokes\footnote{Here interpreted by the angle of the imaginary paddle between the player's hands to the line that goes through the person's shoulders. That means, if you stand upright, and paddle with your hands almost parallel to the ground, you will turn a lot; if you hold one straight above the other, you will turn much less.}, the more the boat will turn.
+\item Also, the faster you move your paddle, the more force you will provide to the boat, and you will go faster!
 \end{itemize}
+
+The game also provides ways of interacting by keyboard:
+\begin{itemize}
+\item If you are unlucky enough not to be able to use a Kinect, don't worry, you can still play the game using the keyboard as the steering device! If you provide the command-line input \texttt{-dKeyboard} (or indeed nothing at all, since this is the default case), Player 1 can steer his or her boat using the keyboard keys \texttt{a} and \texttt{s}, which will simulate a left-side and right-side paddle stroke respectively. Player two will compete by using the keys \texttt{n} and \texttt{m}.
+\item Other keyboard commands include \texttt{q} for quitting the game, \texttt{v} for toggling debug output related to the velocity field, and the keys \texttt{1-9} for different camera options.
+\end{itemize}
+
+
+
+\subsection{Installation}
+In order to install the libraries that provide Kinect\footnote{Namely OpenNI \cite{OpenNI}, a 3D sensor framework for bridging different devices to a uniform API, the NITE algorithms, which are middleware that provides body recognition in the same framework, and SensorKinect \cite{SensorKinect}, an open source driver for the Kinect that plugs into OpenNI.}  and Wii integration\footnote{WiiC \cite{WiiC}, an open source, lightweight library that can handle different Wii controllers via bluetooth, which thus also depends on bluetooth hardware and drivers, and BlueZ in particular.}, take a look at the folders \texttt{fa/sources-for-kinect} and \texttt{fa/sources-for-wii}. Please read the corresponding README files inside and do what it says. The keyboard input is handled by the \emph{Simple DeviceMedia Library} (SDL), which also handles graphical output, which requires the installation of \texttt{libsdl} included in the skeleton described above. The native Xbox Kinect also requires an adapter to allow it to be connected to a computer's USB port.
+
+\subsection{Implementation}
+The device inputs are handled in several different places in the code; firstly, in the first pipeline stage in the class \texttt{CStage_DeviceInput}. Here, if Kinect input was specified, OpenNI-implementing functions in \texttt{DeviceHandler.hpp} and \texttt{ControlPaddle.hpp} are called, and if keyboard input is specified, SDL functionality in \texttt{ControlKey.hpp} is called. In both of these places, the input is converted to a force and a torque, which is sent as a \texttt{CPipelinePacket} subclass to be handled in the Rigid Body part of the code.
+
+Keyboard commands are also handled in the video output pipeline stage \texttt{CStage_VideoOutput}, where it is used to control the camera, and if not matched, passed on to the \texttt{CParameters} class for checking against quitting parameters or similar.
+
+
+%\begin{itemize}
+%\item we only used kinect
+%\item shortly describe kinect input gestures and necessary steps to get the rowing movement detected and correctly resolved
+%\item what do we do with the input? Forward it to rigid bodies!
+%\end{itemize}
