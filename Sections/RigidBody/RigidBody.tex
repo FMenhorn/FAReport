@@ -133,6 +133,8 @@ In the following sections, we want to explain the implementations of the differe
 %\end{itemize}
 \subsubsection{Interface to Input Devices}
 \todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to Input Devices}}
+
+
 \begin{itemize}
 \item how to model rowing
 \item apply forces to bodies depending on input
@@ -142,7 +144,7 @@ In the following sections, we want to explain the implementations of the differe
 \subsubsection{Interface to Image Processing}
 \label{sec: interfaceImageProcessing}
 \tododone[inline]{Friedrich}{Interface RB \textbf{to Image Processing} done}
-\todointern[inline]{Benni}{Benni or Erik please proofread. Saumi: Made some minor changes}
+\todointern[inline]{Benni}{Benni or Erik please proofread. Saumi: Made some minor changes. Erik: Note that this section is using present tense, as opposed to surrounding interface sections!}
 The interface with image processing works with the help of the \texttt{ProcessingManager} class (as also already described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries and rigid and static bodies. The methods of \texttt{ProcessingManager} which we used were:
 \begin{itemize}
 \item \texttt{boatCenters():std::vector<cv::Vec2f>} Returns a 2D vector with the position of the boats.
@@ -179,13 +181,30 @@ As one can easily imagine there is a lot of freedom in the exact parameter choic
 %\item how to model boundaries
 %\item how to create different rigid bodies
 %\end{itemize}
-\subsubsection{Interface to LBM}
-\todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to LBM}}
 
+\subsubsection{Interface to LBM}
+\tododone[inline]{Benni}{Erik responsible for interface from RB \textbf{to LBM}}
+\todointern[inline]{Erik}{Again, if someone feels like proofreading - but it's not very much.}
+In order to get realistic interaction between the fluid field and the (among themselves interacting) rigid bodies, we decided to create an interface class \texttt{LBMRigidBodyObject}, in order to decouple the two parts of the program. The class was decided to:
 \begin{itemize}
-\item how to send important quantities (discretization of continuous RB into cells, velocity of RB...)
-\item how to receive important quantities (forces and torques from the fluid on the body)
+\item Wrap parts of the Rigid Body and Bullet functionality needed for the LBM simulation, such as calculating velocity on the outside of an object, or if a position was inside or outside the object. This would let the functionality be used int the LBM simulation without it having to implement Bullet, while also also isolating it from internal changes in the Rigid Body code.
+\item Similarly, allow the LBM simulation to provide a force and torque from the fluid simulation on the rigid bodies for realistic interaction.
+\item Also process some of the Rigid Body data to be used directly in the LBM simulation, such as delivering a list of LBM cells which were newly covered by the rigid body in the previous timestep. This was decided as the LBM simulation team was significantly smaller than the Rigid Body team, in order to balance the workload on the two groups.
 \end{itemize}
+In hindsight, this last point might not have been the most clever approach, as this processing was not yet in place when the LBM team wanted it, and since the raw data was not going to be needed if the processed data was there, the raw data was not provided by the interface In order to get their functionality, the LBM simulation then implemented Rigid Body-internal functionality, which caused several problem-causing dependencies that were painful to remove. A better approach might have been providing all possible needed raw functionality first, to allow the implementation at various points while still decoupling the two parts of the program. However, as all possible needs cannot always be foreseen when writing an interface, this approach might also not have been possible.
+
+A summarizing UML diagram of the final interfacing can be found in \autoref{fig:LBMRigUML}.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{img/RigidBodies/RigidBodyLBM.png}
+	\caption{Condensed UML diagram around the interface class \texttt{LBMRigidBodyObject}, which wraps and encapsulates functionality of Rigid Body and LBM classes.}
+	\label{fig:LBMRigUML}
+\end{figure}
+%
+%\begin{itemize}
+%\item how to send important quantities (discretization of continuous RB into cells, velocity of RB...)
+%\item how to receive important quantities (forces and torques from the fluid on the body)
+%\end{itemize}
 
 \subsubsection{Interface to Visualization}
 \tododone[inline]{Benni}{Interface RB \textbf{to Visualization} done}
