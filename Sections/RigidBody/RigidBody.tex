@@ -131,15 +131,20 @@ In the following sections, we want to explain the implementations of the differe
 %\item RB have many interfaces! Most complex to LBM, but also many more interfaces with different demands.
 %\item discrete version(LBM, ImgProcessing) vs. continuous version(Visu, RB Internal) of RBs
 %\end{itemize}
+
 \subsubsection{Interface to Input Devices}
-\todourgent[inline]{Benni}{Erik responsible for interface from RB \textbf{to Input Devices}}
+\tododone[inline]{Benni}{Erik responsible for interface from RB \textbf{to Input Devices}}
+\todointern{Erik}{More needed?}
+As information exchange with the input devices only needed to go one way, the common interface between the Input Devices classes and the Rigid Bodies classes is a relatively simple one. Here, we again used a subclass of \texttt{CPipelinePacket}, namely \texttt{PlayerArray}, containing one or several \texttt{struct PlayerData} with information for each player ridid body, such as applied force and torque. This was then applied in the Bullet engine. 
 
+However, to make a game exciting, the force needed to be scaled somewhat -- to make it not too easy but also noot too hard to control the boats down the coarse. This was done on the Rigid Body side of he interface, and required quite a lot of fine-tuning. 
 
-\begin{itemize}
-\item how to model rowing
-\item apply forces to bodies depending on input
-\item in the end more time for finetuning would have been good!
-\end{itemize}
+%
+%\begin{itemize}
+%\item how to model rowing
+%\item apply forces to bodies depending on input
+%\item in the end more time for finetuning would have been good!
+%\end{itemize}
 
 \subsubsection{Interface to Image Processing}
 \label{sec: interfaceImageProcessing}
