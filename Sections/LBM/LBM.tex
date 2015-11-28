@@ -2,7 +2,7 @@
 \tododone[inline]{Christie}{LBM done}
 \todointern[inline]{Christie}{Someone proofread}
 In order to numerically simulate fluid (for eg: the river in "Grand Theft Boat - Sarntal") we used the well known Lattice Boltzmann method. The choice
-of this method can be attributed to its simplicity.The code we implemented was based on a D2Q9 stencil, i.e a 2D grid with 9 partial differential formulas(PDFs)\todointern{Mohamed}{PDF is partial differential "formula". Is that a common term ? I am more used to hear partial differential "equations" PDEs.} per cell (See Figure \ref{fig: D2Q9 push scheme}). 
+of this method can be attributed to its simplicity.The code we implemented was based on a D2Q9 stencil, i.e a 2D grid with 9 Probability Distribution Functions (PDFs) per cell (See Figure \ref{fig: D2Q9 push scheme}). 
 
 	
 \begin{figure} [h]
@@ -67,7 +67,7 @@ received through the RigidBodyInterface. Such implementation could be found in \
  modified data, which we swap after each time step. The streaming step is implemented under the \texttt{LBMData} class. 
  
  \subsection *{Colision} \label{subsection:collision}
- The collision is a local operation to each cell and it just requires plugging in the formula(1) as described in the Algorithm section\todointern{Mohamed}{Isn't it better to write this as a reference? rephrasal suggestion: The collision is a local operation which requires solving equation \ref{eq:LBMalgorithm1} presented in LBM Algorithm section [\ref{sec:LBM_algorithm}]}.The computation of macroscopic density and velocity needed to calculate equilibrium are carried out using:
+ The collision is a local operation to each cell  which requires solving equation \ref{eq:LBMalgorithm1} presented in LBM Algorithm section [\ref{sec:LBM_algorithm}].The computation of macroscopic density and velocity needed to calculate equilibrium are carried out using:
  \[\rho_j = \sum_{\mathrm{PDFs}} f_i\qquad u_j = \frac{1}{\rho_j} \sum_\mathrm{PDFs}
  c_i\]
  
@@ -103,11 +103,10 @@ Furthermore, we implemented boundaries for moving rigid body obstacles(eg: boats
 Where:\\
 \hspace*{3em}
 \begin{tabular}{rl}
-	$f\i$:& are the PDFs in the corresponding directions as shown in figure  \\
+	$f\i$:& are the PDFs in the corresponding directions as shown in figure \ref{fig: Moving boundary}  \\
 	$x\i$ :& are the grid points considered \\
     $\omega_{\alpha}$:& the standard weights \\
 \end{tabular}
-\todointern{Mohamed}{ the figure in the first point is figure \ref{fig: Moving boundary} ?}
 
 If we set the velocity to 0 we get back to the no-slip condition. The same formula is used in \texttt{LBMData::movingboundaryTreatment} to realize the
 moving boundary condition. The wall velocity $u_w$ and the wall distance $\delta$ 
