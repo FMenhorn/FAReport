@@ -1,7 +1,7 @@
 \section{Input Devices}
 \tododone[inline]{Benni}{Erik responsible for section \textbf{Input Devices}}
-\todointern[inline]{Erik}{If someone proofreads it'd be nice, I might ask Steffen}.
-\tododone[inline]{Mohamed}{did proofreading}
+\todointern[inline]{Erik}{If someone proofreads it'd be nice, I might ask Steffen}
+\todointern[inline]{Mohamed}{did proofreading}
 
 To be able to control our game interactively, we need to have some means of providing input during runtime, and this is where the Input Devices come into play. Two different kinds of devices were used in the final game; first, to control the boats, paddling gestures were interpreted by a Microsoft Kinect\footnote{For those who do not know, the \emph{Kinect} is a motion-tracking device developed by Microsoft initially for their gaming console Xbox 360, which can track bodies by analysing a depth field of the view in front of it, provided by an IR camera. For a more in-depth description, see for example \url{http://www.i-programmer.info/babbages-bag/2003-kinect-the-technology-.html}.}, and, second, keyboard inputs were used, for example, to quit the program or change the views for debugging purposes. Additionally, a mode without Kinect was available, which allowed two players to control the boats with the keyboard. In this section, we will look closer at how we used them and how to interface with such devices, and breifly mention how it can work for a Nintendo Wii controller (\emph{Wiimote}), which was initially considered for usage but rejected during the project.
 
@@ -18,7 +18,7 @@ The usage of the Kinect in the game is (at least in theory) very simple.
 \item Just like in reality, the further out one strokes\footnote{Here interpreted by the angle of the imaginary paddle between the player's hands to the line that goes through the person's shoulders. That means, if you stand upright, and paddle with your hands almost parallel to the ground, you will turn a lot; if you hold one straight above the other, you will turn much less.}, the more the boat will turn.
 \item Also, the faster you move your paddle, the more force you will provide to the boat, and you will go faster!
 \end{itemize}
-\todointern[inline]{Mohamed}{Shall we add that this is calibration was proposed by us, ut others might come up with different scenarios to interpret the motion.. I mean that's not a Kinect default calibration}
+\todointern[inline]{Mohamed}{Shall we add that this calibration was proposed by us, ut others might come up with different scenarios to interpret the motion.. I mean that's not a Kinect default calibration}
 
 The game also provides ways of interacting by keyboard:
 \begin{itemize}
