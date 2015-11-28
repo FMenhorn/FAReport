@@ -66,7 +66,7 @@ received through the RigidBodyInterface. Such implementation could be found in \
  to overwrite the current data, we had two arrays to hold the current and the 
  modified data, which we swap after each time step. The streaming step is implemented under the \texttt{LBMData} class. 
  
- \subsection *{Colision} \label{subsection:collision}
+ \subsection *{Collision} \label{subsection:collision}
  The collision is a local operation to each cell  which requires solving equation \ref{eq:LBMalgorithm1} presented in LBM Algorithm section [\ref{sec:LBM_algorithm}].The computation of macroscopic density and velocity needed to calculate equilibrium are carried out using:
  \[\rho_j = \sum_{\mathrm{PDFs}} f_i\qquad u_j = \frac{1}{\rho_j} \sum_\mathrm{PDFs}
  c_i\]
