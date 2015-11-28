@@ -92,6 +92,7 @@ To wrap Bullet, we developed our own classes which we named \texttt{RBObject} an
 The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member, control over the \texttt{RBCollection} and is hence responsible for the simulation. By calling the class method \texttt{doTimeStep()} one implicitly calls the method \texttt{stepSimulation()} of \texttt{btDiscreteDynamicWorld}. 
 \todointern{Benni}{should this part be moved to the interfaces?}
 Furthermore, \texttt{RBManager} is responsible for setting up the correct world with the help of the methods by using its interface to image recognition (see \autoref{sec: interfaceImageRecognition}):
+\todointern{Mohamed}{Broken reference here !! Did you mean interfaceImageProcessing instead ?}
 \begin{itemize}
 \item \texttt{addNewRigidBody():} Adds a new rigid body to \texttt{RBCollection} and \texttt{btDiscreteDynamicWorld}.
 \item \texttt{setUpIslands():} Sets up the islands sent from image processing.
