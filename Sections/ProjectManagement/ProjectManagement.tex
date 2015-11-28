@@ -2,6 +2,7 @@
 \tododone[inline]{Mohamed}{\textbf{Project Management}}
 \tododone[inline]{Benni}{did proofreading}
 This section will give an insight into the recommended management strategy to be used for this kind of project and give an overview over the necessary managerial tools suggested for similar projects in the future.
+In addition, a follow-up section at the end of this document will summarize the the management-oriented mistakes fallen into and challenges faced by different teams
 \todointern[inline]{Benni}{move this to challenges and pitfalls section?}
 We will also show up the challenges that will probably show up along the way as well as strategies for avoiding pitfalls.
 
@@ -42,7 +43,6 @@ Automatically, some ideas dropped out and it was obvious towards which idea(s) t
 
 
 \subsubsection{Scrumming}
-%\textit{An idea about scrumming, what are they used for, the sort of updates discussed through them, etc.}
 The term scrumming in agile management is inspired by the first move in an American football game, where all the players from each team initially start at the centerline and then in a glance spread all over the field - that move is the \emph{scrum}. The idealisation of such a concept in software development is such that the developers meet frequently (usually weekly or biweekly, at Ferienakademie of course more frequently) to discuss the following three points:
 \begin{itemize}
   \item{What has been achieved/completed since the last scrum?}
@@ -51,38 +51,15 @@ The term scrumming in agile management is inspired by the first move in an Ameri
 \end{itemize}
 The main idea of scrumming is to keep all developers and the manger(s) aware of the current status of each separate area in the project and of what each team has achieved so far. 
 Scrums are neither for feedback on the project or the developers nor for brainstorming. 
-In our case, the scrum was held almost every morning, and if needed, it was rescheduled to a different time during the day, but generally we had a daily scrum. Our team consisted of about 20 developers and having all those in one meeting was thought to be hectic. Hence, for every team, a representative was chosen to attend the scrum and update on behalf of his team. Nevertheless, involving the entire team in the meeting doesn't sound like a bad idea since it could provide an even more detailed insight about the progress of each team (versus the general statement about the progress given by the representative). Additionally this encourages a more direct communication channel between members from different teams dealing with common issues (such as interfaces). \todo{lesson learned? I think this only makes sense after the respective sections.} In our project, I guess, it would have helped to have the developers of the LBM team listen directly in scrums from the RB team and vice versa.
+In our case, the scrum was held almost every morning, and if needed, it was rescheduled to a different time during the day, but generally we had a daily scrum.
 
 \subsubsection{Code Handling Facilitators}
 One of the duties of the project management is to ensure that code is being handled smoothly within the team. Our team has found the following tools pretty beneficial while working on the project.
 
 \begin{itemize}
   \item \textbf{Git}\footnote{An alternative code management tool could be SVN}: for organized code sharing without conflicts, repository updating with current work, experimenting safely with developers' ideas on separate branches, managing conflicts between coders' work, etc. (for managing merge conflicts we suggest \href{meld}{http://meldmerge.org/})
-  \item \textbf{CMake}: for a more neat and modular compilation of the whole project from one parent directory
+  \item \textbf{CMake}: for a more neat and modular compiling and packaging of the whole project from one parent directory. CMake generates native makefiles and workspaces that can be robustly used in the compiler environment.
   \item \textbf{Valgrind}: for debugging the code and hunting malicious code lines that result in segmentation faults and other nasty bugs
   \item \textbf{Unit-testing}\footnote{Boost provides a good unit testing tool for C++}: testing each block of code or every interface separately with hardcoded example data to make sure it is bug free and interacting safely with given input and providing sensible output before handling it to the other teams up- and downstream the pipeline\label{unit_testing}
-  \item \textbf{Code References}: since we were in an internet-deserted area, having an offline chest of language references and library documentation is worth a fortune. Useful documentations are library's supplier-provided documentation, c++ reference and an offline repository of stackoverflow (and might as well for other libraries used if no PDF documentation was found\todointern{Benni}{what? I don't understand the sentence...})
+  \item \textbf{Code References}: since we were in an internet-deprived area, having an offline chest of language references and library documentation is worth a fortune. Useful references are official library documentations, c++ reference and an offline repository of stackoverflow.com (this also could be done for libraries which provide only online documentation such as boost libraries)
 \end{itemize}
-
-\subsection{Challenges and Obstacles}
-\todourgent[inline]{Benni}{Move this part in a final summary chapter? Summary and lessons learned}
-Challenges are not bugs, they are features, and one should be indeed aware of their existence and do his/her best to avoid them or at worst be ready to handle them if they can't be detoured \todointern{Benni}{do your best to avoid challenges! Surprising attitude for a BGCE student :P}. Some challenges that we experienced through our project are listed below.
-
-\begin{itemize}
-  \item \textbf{Time constraint}: We had many hikes, plus there were a couple of social gatherings and events such as the tournaments and the cultural evening. This boiled down two weeks of work dedicated to the project to much less time. This aspect needs to be taken into account when setting the milestones for the project.
-  \item \textbf{Defining the project's topic}: Due to the multi-disciplinary background of the participants as well as various interests, the brainstorming session turns out really vibrant between different ideas. Attention should be drawn to common grounds and the manager(s) should at some point occlude the ongoing flow of ideas to agree onto something.
-  \item \textbf{Defining the milestones (be really to \todo{?} agile)}: One of the challenges faced in our projects was phrasing the first milestone deliverables thorough-enough. The first milestone deliverable should not have been just about "Create a game with the simplest fluid-structure interaction and only taking input from Kinect". Such a statement comprised too much of details to work on such as the level of details of rigid bodies capabilities. In addition, it required a comprehensive data handling system between different pipeline stages, which implied that each team should necessarily implement fully-working functionality in order to test the pipeline integrity (imagine how long could this have taken !!).
-  A more efficient/agile approach would have been to set the first milestone deliverable to be "building and closing the pipeline with dummy data". This would have crossed out a milestone from the list and given all the teams an insight about into the interaction with the preceding and proceeding pipeline stages.
-  \item \textbf{Testing the code}: With around 20 developers, each one implementing a chunk, the code is very vulnerable to get broken by some mathematical fault in a function or a segmentation-fault in one group's code. This could be avoided -- up to some extend -- by unit-testing. Unit-testing is hard-coding an example in order to test the implemented methods and ensure that they are giving the expected response. Although unit-testing requires a considerable additional workload, it, on the other hand, saves the programmers a lot of debugging time in case something goes wrong. This was extremely crucial in the interface between rigid bodies and LBM due to the massive amount of communication between the two codes.
-  \item \textbf{Waterfalling}: Waterfall differs from agile management in that it treats the project as a one whole and the tangible output is only delivered at the end. This could be inefficient in projects like ours since waiting till the end since the developers might get demotivated as time passes without tangible output\todo{?}. Also, the project becomes more rigid to adding or modifying milestone deliverables for later stages. The risk of waterfalling is usually high when the first milestone is not clearly bounded and be made aware to the developers. The risk evolves that they end up indulging into coding and extending functionality of their blocks, while delaying integration of their respective parts with the others on the pipeline.
-  \item \textbf{Speaking German}: Although the course's official language is English, nevertheless, one can't hold a group of 90\% of Germans to speak their mother language. In such an environment, non-formal meetings between developers (meaning small talks during coffee breaks, discussion over lunch, casual chats, etc.) encourage ideas flow and facilitate problem solving among developers as well as helps management to be updated with deeper details of the project's status. It is rather recommended that the managers' language skills in later courses is good enough to engage and comprehend such situations easily and not just rely on the English scrum meeting for udpates.
-\end{itemize}
-
-\todoinintern{}{additional stuff for lessons learned}{ 
-\begin{itemize}
-\item Managers should not distribute among groups, but manage the team and mistrust everybody. 
-\item A group dedicated to game logic (became part of rigid bodies job...) and level design would have been good. 
-\item Visu people used OpenGL (very rigid, only runs on some computers, BUT powerful), SDL was the intended language (default in sceleton). Maybe presentation on SDL would have been good? Are there also other possible presentation topics, we missed during ferienakademie?
-\end{itemize}
-}
-

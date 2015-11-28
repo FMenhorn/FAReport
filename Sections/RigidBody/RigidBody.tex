@@ -84,7 +84,6 @@ To wrap Bullet, we developed our own classes which we named \texttt{RBObject} an
 \end{figure}
 
 \subsubsection*{RBCollection}
-<<<<<<< HEAD
 \texttt{RBCollection} is a container class for all generated \texttt{RBObjects}. is also responsible for the communication to LBM and visualization, since it is a derived class from \texttt{CPipelinePacket}. With methods like \texttt{getLBMOBjectWrapperBegin()} or \texttt{getPayloadRaw()} it gives access to different pieces of information transferred between the stages. 
 
 \subsubsection*{RBManager}
@@ -166,7 +165,6 @@ of \texttt{RBManager}. The interface is also visualised as an UML diagram in \au
 \end{figure}
 
 
-<<<<<<< HEAD
 For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can calculate a center of mass. For rigid bodies (static or dynamic) we calculated the mean position of the polygon points as center of mass $\vec{x}$ and also the mean deviation $\hat{r}$ to approximate a radius $r$. To set up the boundary, we connect the polygon points one after another with the help of rectangular shaped rigid bodies. The mass and shape is assigned depending on the type of the body and its volume (mass=0: static body, mass$>$0: dynamic body). We end up with four different kinds of rigid bodies which we approximated as follows:
 \begin{itemize}
 \item \textbf{Boats:} \texttt{RBCircle} with position $\vec{x}$, radius $r=20$, mass$=0.6e4$ and moment of inertia$=1.2e7$.
