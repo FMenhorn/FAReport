@@ -101,21 +101,19 @@ Furthermore, \texttt{RBManager} is responsible for setting up the correct world 
 \end{itemize}
 
 \subsubsection{Discussion}
-\tododone[inline]{Benni}{RB \textbf{Discussion} done}
-\todointern[inline]{Benni}{Erik or Friedrich please proofread}
-Wrapping Bullet enabled us to add a lot of functionality to our game while keeping the necessary work on implementation and testing low. But understanding and wrapping Bullet was still a complex and time consuming task. Therefore it took very long to produce a working mockup for the rigid body part and this also slowed down the process of defining interfaces to the other groups. In the end we have not been able to use the huge capabilities of Bullet whereas theoretically our implementation supports complex shapes like polygons, due to time constraints.
+\tododone[inline]{Erik}{ proofread; Benni check if there's anything you want to add}
+Wrapping Bullet enabled us to add a lot of functionality to our game while keeping the necessary work on implementation and testing low. Nevertheless, understanding and wrapping Bullet was still a complex and time consuming task. It thus took us very long to produce a working basic version for the rigid body part, which also slowed down the process of defining interfaces to the other groups. In the end, we were not able to use the huge capabilities of Bullet, even though our implementation theoretically supports complex shapes like polygons, this due to time constraints.
 
-Wrapping Bullet already at the beginning of the project has been a bad decision, because this decision slowed down the process of the whole project and we put a lot of effort into functionality nobody actually uses. A better solution would have been implementing a very simple rigid body engine with basic functionality first\footnote{Very simple means \emph{really} as simple as possible: Only spheres, no rotation, only explicit Euler for time integration, no optimizations etc.} and then improving the functionality as soon as the interfaces are defines -- here wrapping Bullet "under the hood" would have been an option.
+In retrospect, wrapping Bullet already at the beginning of the project was most likely not the best decision, since this slowed down the progress of the whole project, and because we put a lot of effort into functionality nobody actually uses. A better solution might have been implementing a very simple rigid body engine with only basic functionality first\footnote{Very simple here means \emph{really} as simple as possible, for example: Only spheres, no rotation, only explicit Euler for time integration, no optimizations etc.} and then improving the functionality as soon as the interfaces were defined -- hence, wrapping Bullet "under the hood" would probably have been an viable option.
 
 \subsection{Interfaces}
-\tododone[inline]{Friedrich}{\textbf{Interfaces overview} of RB done}
-\tododone[inline]{Benni}{Someone proofreading? Saumi: Proofreading of intro done. Made minor changes}
-The most complex task in the execution of the project turned out to be getting the interfaces between the groups running. Rigid bodies needed interaction with all of them:
+\tododone[inline]{Erik}{ did some reformulation, check again benni?}
+The most complex task in the execution of the project turned out to be getting the interfaces between the groups running. Rigid bodies need interaction with all of them:
 \begin{itemize}
 \item \textbf{Input devices:} The boats are rigid bodies and the forces on them are applied through input devices.
-\item \textbf{Image Processing:} Sends information on the terrain, which is then implemented as a set of rigid bodies.
-\item \textbf{Visualization:} Creates the visual output of objects depending on their properties.
-\item \textbf{LBM:} Simulates the fluid-structure interaction between flow and objects.
+\item \textbf{Image Processing:} Interprets nformation on the level layout, which includes a set of rigid bodies that must be created.
+\item \textbf{Visualization:} The visual output of objects must be created depending on their properties.
+\item \textbf{LBM:} Simulating the fluid-structure interaction between flow and objects.
 \end{itemize}
 In order for the project to function, it was imperative that all these interfaces function properly. Hence, the correct implementation of the interfaces was a crucial task.
 In addition, an important goal was to completely hide the complexity of the Bullet library from the other groups and just supply them with the relevant information for their task.
@@ -128,7 +126,7 @@ In the following sections, we want to explain the implementations of the differe
 
 \subsubsection{Interface to Input Devices}
 \tododone[inline]{Benni}{Erik responsible for interface from RB \textbf{to Input Devices}}
-\todointern{Erik}{More needed?}
+\todointern[inline]{Erik}{Anyone proofread?}
 As information exchange with the input devices only needed to go one way, the common interface between the Input Devices classes and the Rigid Bodies classes is a relatively simple one. Here, we again used a subclass of \texttt{CPipelinePacket}, namely \texttt{PlayerArray}, containing one or several \texttt{struct PlayerData} with information for each player ridid body, such as applied force and torque. This was then applied in the Bullet engine. 
 
 However, to make a game exciting, the force needed to be scaled somewhat -- to make it not too easy but also noot too hard to control the boats down the coarse. This was done on the Rigid Body side of he interface, and required quite a lot of fine-tuning. 
@@ -143,8 +141,8 @@ However, to make a game exciting, the force needed to be scaled somewhat -- to m
 \subsubsection{Interface to Image Processing}
 \label{sec: interfaceImageProcessing}
 \tododone[inline]{Friedrich}{Interface RB \textbf{to Image Processing} done}
-\todointern[inline]{Benni}{Benni or Erik please proofread. Saumi: Made some minor changes. Erik: Note that this section is using present tense, as opposed to surrounding interface sections!}
-The interface with image processing works with the help of the \texttt{ProcessingManager} class (as also already described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries and rigid and static bodies. The methods of \texttt{ProcessingManager} which we used were:
+\todointern[inline]{Erik}{Changed to past tense, please check if everything still fits!}
+The interface with image processing worked with the help of the \texttt{ProcessingManager} class (as described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries and rigid and static bodies. The methods of \texttt{ProcessingManager} which we used are:
 \begin{itemize}
 \item \texttt{boatCenters():std::vector<cv::Vec2f>} Returns a 2D vector with the position of the boats.
 \item \texttt{outerBorder():Polygon} Returns a \texttt{Polygon} which holds the structure of the outer border
@@ -165,14 +163,14 @@ of \texttt{RBManager}. The interface is also visualised as an UML diagram in \au
 \end{figure}
 
 
-For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we can calculate a center of mass. For rigid bodies (static or dynamic) we calculated the mean position of the polygon points as center of mass $\vec{x}$ and also the mean deviation $\hat{r}$ to approximate a radius $r$. To set up the boundary, we connect the polygon points one after another with the help of rectangular shaped rigid bodies. The mass and shape is assigned depending on the type of the body and its volume (mass=0: static body, mass$>$0: dynamic body). We end up with four different kinds of rigid bodies which we approximated as follows:
+For each \texttt{Polygon} given from the \texttt{ProcessingManager}, we calculated different quantities from the polygon vertex points. For rigid bodies (static or dynamic) we calculated the center of mass $\vec{x}$ as the mean position of the polygon points, and also an approximate radius $\hat{r}$ by the mean standard deviation in distance from this point. To set up the boundary, we connected the polygon points one after another with the help of rectangular shaped rigid bodies. The mass and shape was assigned depending on the type of the rigid body and its volume (mass=0: static body, mass$>$0: dynamic body). We ended up with four different kinds of rigid bodies which we approximated as follows:
 \begin{itemize}
 \item \textbf{Boats:} \texttt{RBCircle} with position $\vec{x}$, radius $r=20$, mass$=0.6e4$ and moment of inertia$=1.2e7$.
 \item \textbf{Islands:} \texttt{RBCircle} with position $\vec{x}$, radius $r=\hat{r}$, mass$=0$ and moment of inertia$=0$.
 \item \textbf{Floating Objects:} \texttt{RBCircle} with position $\vec{x}$, radius $r=\hat{r}$, mass$=r^2$, and moment of inertia $=0$.
 \item \textbf{Boundary:} Multiple \texttt{RBRectangle} connecting points of polygon, mass$=0$ and moment of inertia $=0$.
 \end{itemize}
-In the end, these new objects are added to the \texttt{btDiscreteDynamicWorld} and to the \texttt{RBCollection}.
+In the end, these new objects were then added to the \texttt{btDiscreteDynamicWorld} and to the \texttt{RBCollection}.
 
 
 As one can easily imagine there is a lot of freedom in the exact parameter choice; the values taken here were derived from playing the game and getting a user feedback.
@@ -192,13 +190,15 @@ In order to get realistic interaction between the fluid field and the (among the
 \end{itemize}
 In hindsight, this last point might not have been the most clever approach, as this processing was not yet in place when the LBM team wanted it, and since the raw data was not going to be needed if the processed data was there, the raw data was not provided by the interface In order to get their functionality, the LBM simulation then implemented Rigid Body-internal functionality, which caused several problem-causing dependencies that were painful to remove. A better approach might have been providing all possible needed raw functionality first, to allow the implementation at various points while still decoupling the two parts of the program. However, as all possible needs cannot always be foreseen when writing an interface, this approach might also not have been possible.
 
-A summarizing UML diagram of the final interfacing can be found in \autoref{fig:LBMRigUML}.
-
-\begin{figure}
+\begin{figure}[htb]
 	\includegraphics[width=\textwidth]{img/RigidBodies/RigidBodyLBM.png}
-	\caption{Condensed UML diagram around the interface class \texttt{LBMRigidBodyObject}, which wraps and encapsulates functionality of Rigid Body and LBM classes.}
+	\caption{Condensed UML diagram around the interface class \texttt{LBMRigidBodyObject}, which wraps and encapsulates functionality of Rigid Body and LBM classes, to allow the different parts of the program to exchange information with each other.}
 	\label{fig:LBMRigUML}
 \end{figure}
+
+A summarizing UML diagram of the final interfacing can be found in \autoref{fig:LBMRigUML}.
+
+
 %
 %\begin{itemize}
 %\item how to send important quantities (discretization of continuous RB into cells, velocity of RB...)
@@ -207,9 +207,9 @@ A summarizing UML diagram of the final interfacing can be found in \autoref{fig:
 
 \subsubsection{Interface to Visualization}
 \tododone[inline]{Benni}{Interface RB \textbf{to Visualization} done}
-\todointern[inline]{Benni}{Erik or Friedrich please proofread}
+\tododone[inline]{Erik}{did minor adjustments, please check}
 
-For finally visualizing the rigid bodies we have to give access to the shape and the position of the rigid body. Our class \texttt{RBObject} already holds all this information. Therefore it was sufficient to grant -- through the \texttt{RBCollection} -- access to the \texttt{RBObject} objects:
+For visualizing the rigid bodies we have to provide the shape and the position of the rigid body. Since our class \texttt{RBObject} already held all this information, we found it sufficient to grant access to the \texttt{RBObject} objects through the \texttt{RBCollection} and use their methods. The following methods of \texttt{RBObject} objects provide the functionality:
 \begin{itemize}
 \item \texttt{getCenterOfMass()} and \texttt{getAngle()} give access to the position of the rigid body.
 \item \texttt{getRBShape()} returns the \texttt{RBShape} of the body, which is either a \texttt{RBCircle} with its radius or a \texttt{RBRectangle} with the length of its two sides.
