@@ -74,7 +74,7 @@ In this section we take a look at our actual implementation. For that, the gener
 \end{figure}
 
 \subsubsection*{RBObject and RBShape}
-To wrap Bullet, we developed our own classes which we named \texttt{RBObject} and \texttt{RBShape}; they wrap \texttt{btRigidBody} and \texttt{btCollisionShape} respectively. The two specific shapes we implemented by now are \texttt{RBCircle} and \texttt{RBRectangle}, see \autoref{fig: RBShape} for the specific inheritance diagram. \todointern{Benni}{should this be moved to the respective interfaces?} 
+To wrap Bullet, we developed our own classes which we named \texttt{RBObject} and \texttt{RBShape}; they wrap \texttt{btRigidBody} and \texttt{btCollisionShape} respectively. The two specific shapes we implemented by now are \texttt{RBCircle} and \texttt{RBRectangle}, see \autoref{fig: RBShape} for the specific inheritance diagram.
 \texttt{RBObject} on the other hand includes all the methods from Bullet which we need to transfer information for the LBM simulation and the visualization, like \texttt{getLinearVelocity()} and \texttt{getCenterOfMass()} as mentioned above. 
 \begin{figure}[ht]
 \centering
@@ -88,10 +88,7 @@ To wrap Bullet, we developed our own classes which we named \texttt{RBObject} an
 
 \subsubsection*{RBManager}
 \label{sec: rbManager}
-The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member, control over the \texttt{RBCollection} and is hence responsible for the simulation. By calling the class method \texttt{doTimeStep()} one implicitly calls the method \texttt{stepSimulation()} of \texttt{btDiscreteDynamicWorld}. 
-\todointern{Benni}{should this part be moved to the interfaces?}
-Furthermore, \texttt{RBManager} is responsible for setting up the correct world with the help of the methods by using its interface to image recognition (see \autoref{sec: interfaceImageRecognition}):
-\todointern{Mohamed}{Broken reference here !! Did you mean interfaceImageProcessing instead ?}
+The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member, control over the \texttt{RBCollection} and is hence responsible for the simulation. By calling the class method \texttt{doTimeStep()} one implicitly calls the method \texttt{stepSimulation()} of \texttt{btDiscreteDynamicWorld}. Furthermore, \texttt{RBManager} is responsible for setting up the correct world with the help of the methods by using its interface to image recognition (see \ref{sec: interfaceImageProcessing}):
 \begin{itemize}
 \item \texttt{addNewRigidBody():} Adds a new rigid body to \texttt{RBCollection} and \texttt{btDiscreteDynamicWorld}.
 \item \texttt{setUpIslands():} Sets up the islands sent from image processing.
@@ -107,11 +104,10 @@ Wrapping Bullet enabled us to add a lot of functionality to our game while keepi
 In retrospect, wrapping Bullet already at the beginning of the project was most likely not the best decision, since this slowed down the progress of the whole project, and because we put a lot of effort into functionality nobody actually uses. A better solution might have been implementing a very simple rigid body engine with only basic functionality first\footnote{Very simple here means \emph{really} as simple as possible, for example: Only spheres, no rotation, only explicit Euler for time integration, no optimizations etc.} and then improving the functionality as soon as the interfaces were defined -- hence, wrapping Bullet "under the hood" would probably have been an viable option.
 
 \subsection{Interfaces}
-\tododone[inline]{Erik}{ did some reformulation, check again benni?}
 The most complex task in the execution of the project turned out to be getting the interfaces between the groups running. Rigid bodies need interaction with all of them:
 \begin{itemize}
 \item \textbf{Input devices:} The boats are rigid bodies and the forces on them are applied through input devices.
-\item \textbf{Image Processing:} Interprets nformation on the level layout, which includes a set of rigid bodies that must be created.
+\item \textbf{Image Processing:} Interprets information on the level layout, which includes a set of rigid bodies that must be created.
 \item \textbf{Visualization:} The visual output of objects must be created depending on their properties.
 \item \textbf{LBM:} Simulating the fluid-structure interaction between flow and objects.
 \end{itemize}
@@ -119,29 +115,14 @@ In order for the project to function, it was imperative that all these interface
 In addition, an important goal was to completely hide the complexity of the Bullet library from the other groups and just supply them with the relevant information for their task.
 
 In the following sections, we want to explain the implementations of the different interfaces to the other groups in more detail.
-%\begin{itemize}
-%\item RB have many interfaces! Most complex to LBM, but also many more interfaces with different demands.
-%\item discrete version(LBM, ImgProcessing) vs. continuous version(Visu, RB Internal) of RBs
-%\end{itemize}
 
 \subsubsection{Interface to Input Devices}
-\tododone[inline]{Benni}{Erik responsible for interface from RB \textbf{to Input Devices}}
-\todointern[inline]{Erik}{Anyone proofread?}
 As information exchange with the input devices only needed to go one way, the common interface between the Input Devices classes and the Rigid Bodies classes is a relatively simple one. Here, we again used a subclass of \texttt{CPipelinePacket}, namely \texttt{PlayerArray}, containing one or several \texttt{struct PlayerData} with information for each player ridid body, such as applied force and torque. This was then applied in the Bullet engine. 
 
-However, to make a game exciting, the force needed to be scaled somewhat -- to make it not too easy but also noot too hard to control the boats down the coarse. This was done on the Rigid Body side of he interface, and required quite a lot of fine-tuning. 
-
-%
-%\begin{itemize}
-%\item how to model rowing
-%\item apply forces to bodies depending on input
-%\item in the end more time for finetuning would have been good!
-%\end{itemize}
+However, to make a game exciting, the force needed to be scaled somewhat -- to make it not too easy but also not too hard to control the boats down the course. This was done on the Rigid Body side of the interface, and required quite a lot of fine-tuning. 
 
 \subsubsection{Interface to Image Processing}
 \label{sec: interfaceImageProcessing}
-\tododone[inline]{Friedrich}{Interface RB \textbf{to Image Processing} done}
-\todointern[inline]{Erik}{Changed to past tense, please check if everything still fits!}
 The interface with image processing worked with the help of the \texttt{ProcessingManager} class (as described in \autoref{sec: imageProcessing}) which we included as member in \texttt{RBManager}. This class contains all the information needed for us to set up the correct boat starting positions, boundaries and rigid and static bodies. The methods of \texttt{ProcessingManager} which we used are:
 \begin{itemize}
 \item \texttt{boatCenters():std::vector<cv::Vec2f>} Returns a 2D vector with the position of the boats.
@@ -180,15 +161,13 @@ As one can easily imagine there is a lot of freedom in the exact parameter choic
 %\end{itemize}
 
 \subsubsection{Interface to LBM}
-\tododone[inline]{Benni}{Erik responsible for interface from RB \textbf{to LBM}}
-\todointern[inline]{Erik}{Again, if someone feels like proofreading - but it's not very much.}
 In order to get realistic interaction between the fluid field and the (among themselves interacting) rigid bodies, we decided to create an interface class \texttt{LBMRigidBodyObject}, in order to decouple the two parts of the program. The class was decided to:
 \begin{itemize}
-\item Wrap parts of the Rigid Body and Bullet functionality needed for the LBM simulation, such as calculating velocity on the outside of an object, or if a position was inside or outside the object. This would let the functionality be used int the LBM simulation without it having to implement Bullet, while also also isolating it from internal changes in the Rigid Body code.
+\item Wrap parts of the Rigid Body and Bullet functionality needed for the LBM simulation, such as calculating velocity on the outside of an object, or if a position was inside or outside the object. This would let the functionality be used in the LBM simulation without it having to implement Bullet, while also also isolating it from internal changes in the Rigid Body code.
 \item Similarly, allow the LBM simulation to provide a force and torque from the fluid simulation on the rigid bodies for realistic interaction.
 \item Also process some of the Rigid Body data to be used directly in the LBM simulation, such as delivering a list of LBM cells which were newly covered by the rigid body in the previous timestep. This was decided as the LBM simulation team was significantly smaller than the Rigid Body team, in order to balance the workload on the two groups.
 \end{itemize}
-In hindsight, this last point might not have been the most clever approach, as this processing was not yet in place when the LBM team wanted it, and since the raw data was not going to be needed if the processed data was there, the raw data was not provided by the interface In order to get their functionality, the LBM simulation then implemented Rigid Body-internal functionality, which caused several problem-causing dependencies that were painful to remove. A better approach might have been providing all possible needed raw functionality first, to allow the implementation at various points while still decoupling the two parts of the program. However, as all possible needs cannot always be foreseen when writing an interface, this approach might also not have been possible.
+In hindsight, this last point might not have been the most clever approach, as this processing was not yet in place when the LBM team wanted it, and since the raw data was not going to be needed if the processed data was there, the raw data was not provided by the interface. In order to get their functionality, the LBM simulation then implemented Rigid Body-internal functionality, which caused several problem-causing dependencies that were painful to remove. A better approach might have been providing all possible needed raw functionality first, to allow the implementation at various points while still decoupling the two parts of the program. However, as all possible needs cannot always be foreseen when writing an interface, this approach might also not have been possible.
 
 \begin{figure}[htb]
 	\includegraphics[width=\textwidth]{img/RigidBodies/RigidBodyLBM.png}
