@@ -98,7 +98,6 @@ The class \texttt{RBManager} has a \texttt{btDiscreteDynamicWorld} as member, co
 \end{itemize}
 
 \subsubsection{Discussion}
-\tododone[inline]{Erik}{ proofread; Benni check if there's anything you want to add}
 Wrapping Bullet enabled us to add a lot of functionality to our game while keeping the necessary work on implementation and testing low. Nevertheless, understanding and wrapping Bullet was still a complex and time consuming task. It thus took us very long to produce a working basic version for the rigid body part, which also slowed down the process of defining interfaces to the other groups. In the end, we were not able to use the huge capabilities of Bullet, even though our implementation theoretically supports complex shapes like polygons, this due to time constraints.
 
 In retrospect, wrapping Bullet already at the beginning of the project was most likely not the best decision, since this slowed down the progress of the whole project, and because we put a lot of effort into functionality nobody actually uses. A better solution might have been implementing a very simple rigid body engine with only basic functionality first\footnote{Very simple here means \emph{really} as simple as possible, for example: Only spheres, no rotation, only explicit Euler for time integration, no optimizations etc.} and then improving the functionality as soon as the interfaces were defined -- hence, wrapping Bullet "under the hood" would probably have been an viable option.
@@ -185,12 +184,10 @@ A summarizing UML diagram of the final interfacing can be found in \autoref{fig:
 %\end{itemize}
 
 \subsubsection{Interface to Visualization}
-\tododone[inline]{Benni}{Interface RB \textbf{to Visualization} done}
-\tododone[inline]{Erik}{did minor adjustments, please check}
-
 For visualizing the rigid bodies we have to provide the shape and the position of the rigid body. Since our class \texttt{RBObject} already held all this information, we found it sufficient to grant access to the \texttt{RBObject} objects through the \texttt{RBCollection} and use their methods. The following methods of \texttt{RBObject} objects provide the functionality:
 \begin{itemize}
 \item \texttt{getCenterOfMass()} and \texttt{getAngle()} give access to the position of the rigid body.
 \item \texttt{getRBShape()} returns the \texttt{RBShape} of the body, which is either a \texttt{RBCircle} with its radius or a \texttt{RBRectangle} with the length of its two sides.
 \end{itemize}
 Representing shapes in an abstract way through the \texttt{RBShape} interface enabled us to completely hide Bullet from the visualization part of the pipeline while representing rigid body shapes in a proper and extensible way\footnote{Polygons could be easily added to our design, by simply adding a child class \texttt{RBPolygon} to the \texttt{RBShape} interface.}. 
+\enlargethispage{1cm}

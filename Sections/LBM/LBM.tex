@@ -44,6 +44,7 @@ of this method can be attributed to its simplicity.The code we implemented was b
 		\label{fig: LBMGeneric_algorithm}
 	\end{figure} 
 	
+\newpage
 \subsection{Implementation}
 The LBM stage kicks in once it receives the flag fields (called \texttt{levelGeometry} internally in LBM code) and information about rigid bodies in the form of iterators through the interface between $RigidBodies$ and $LBM$ (RigidBodyInterface). Then one timestep of LBM simulation is 
 carried out (as described below). Finally, the velocities of fluid along with

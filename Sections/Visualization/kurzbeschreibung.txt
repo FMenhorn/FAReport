@@ -8,20 +8,20 @@ Wichtige Dateien / Ordner:
 
 
 Allgemein:
-- Visualisierung basiert praktisch komplett auf reinem OpenGL
-	- Grund dafür war, dass wir das alle halbwegs konnten, während wir von SDL keine Ahnung hatten :)
-	- Nachteil ist, dass OpenGL sehr nah an der Hardware und daher ziemlich klobig ist
-- Initialisierung:
-	- Konstruktor von "CStage_VideoOutput"
-	- Am Anfang wird das flag field einmalig geladen
-- Pipeline Input:
-	- Methode "CStage_VideoOutput::pipeline_process_input"
-	- Liest Input der Pipeline (falls welcher da ist) und speichert ihn als internen Zustand ab
-	- Input können das gesamte flow field und die ganzen rigid bodies sein
+x Visualisierung basiert praktisch komplett auf reinem OpenGL
+	x Grund dafür war, dass wir das alle halbwegs konnten, während wir von SDL keine Ahnung hatten :)
+	x Nachteil ist, dass OpenGL sehr nah an der Hardware und daher ziemlich klobig ist
+x Initialisierung:
+	x Konstruktor von "CStage_VideoOutput"
+	x Am Anfang wird das flag field einmalig geladen
+x Pipeline Input:
+	x Methode "CStage_VideoOutput::pipeline_process_input"
+	x Liest Input der Pipeline (falls welcher da ist) und speichert ihn als internen Zustand ab
+	x Input können das gesamte flow field und die ganzen rigid bodies sein
 	- Das flag field wird ignoriert (offensichtlich ein TODO ^^)
-- Main loop:
-	- Methode "CStage_VideoOutput::main_loop_callback"
-	- Rendert die gesamte Szene auf Basis des aktuell vorhandenen Zustands
+x Main loop:
+	x Methode "CStage_VideoOutput::main_loop_callback"
+	x Rendert die gesamte Szene auf Basis des aktuell vorhandenen Zustands
 - Szene:
 	- Die Szene selbst besteht aus mehreren Schichten
 		- Untergrund (Wasser / Land) -> mehrere verschiedene Implementierungen (siehe unten)
@@ -46,9 +46,9 @@ Allgemein:
 		- In einem ersten Schritt ("CStage_VideoOutput::draw_heightmap_step()") wird eine Eingabetextur Pixel-für-Pixel anhand des Flow-fields verschoben (-> Grundidee von LIC)
 		- Das Resultat wird dann gerendert und dient im nächsten Schritt wieder als Eingabetextur
 		- Nachdem das Verfahren sehr schnell eine hübsche Eingabetextur zur einem Brei blurrt, wird stetig die Original Wasser-Textur "untergemischt", damit ihre Struktur erhalten bleibt		
-- Kamera:
-	- Orthografische Kamera, die von oben auf die Szene blickt
-	- Dynamische Bewegung -> "CStage_VideoOutput::follow_focus()"
+x Kamera:
+	x Orthografische Kamera, die von oben auf die Szene blickt
+	x Dynamische Bewegung -> "CStage_VideoOutput::follow_focus()"
 - Steuerung:
 	- Keys, die mit der Visualisierung zusammenhängen, handeln wird selbst in "CStage_VideoOutput::sdl_handle_key_down()"
 	- Dienen dazu, die Kamera zu steuern und Debug Output zu toggeln
